@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in — Jeeni Reader AI</title>
+<style>
+  :root{
+    --bg-1:#0d0f0a;
+    --text-main:#f5f2ea;
+    --text-muted:#a9a49a;
+    --orange-1:#ff9d3d;
+    --orange-2:#ff7a1a;
+    --teal:#3ee8c8;
+    --card-bg:rgba(255,255,255,0.04);
+    --card-border:rgba(255,255,255,0.08);
+    --error:#ff6b6b;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: radial-gradient(ellipse at top left, #241a10 0%, var(--bg-1) 45%, #0a0b07 100%);
+    color:var(--text-main);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .container{
+    max-width:1300px;
+    margin:0 auto;
+    width:100%;
+    padding:0 40px;
+  }
+
+  nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:26px 0;
+  }
+  .logo{
+    font-size:19px;
+    font-weight:700;
+    text-decoration:none;
+    color:var(--text-main);
+  }
+  .nav-link{
+    color:var(--text-muted);
+    text-decoration:none;
+    font-size:14.5px;
+    font-weight:600;
+  }
+
+  .auth-wrap{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px 0 60px;
+  }
+
+  .auth-card{
+    width:100%;
+    max-width:420px;
+    background:var(--card-bg);
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    padding:36px;
+  }
+
+  .auth-card h1{
+    font-size:24px;
+    font-weight:800;
+    margin-bottom:6px;
+  }
+  .auth-card .sub{
+    color:var(--text-muted);
+    font-size:14.5px;
+    margin-bottom:26px;
+  }
+
+  .tabs{
+    display:flex;
+    background:rgba(255,255,255,0.04);
+    border:1px solid var(--card-border);
+    border-radius:12px;
+    padding:4px;
+    margin-bottom:26px;
+  }
+  .tab{
+    flex:1;
+    text-align:center;
+    padding:9px 0;
+    border-radius:9px;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    color:var(--text-muted);
+    background:transparent;
+    border:none;
+  }
+  .tab.active{
+    background:linear-gradient(90deg, var(--orange-1), var(--orange-2));
+    color:#1a1206;
+  }
+
+  .field{
+    margin-bottom:16px;
+  }
+  .field label{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:7px;
+    color:#d7d3c8;
+  }
+  .field input{
+    width:100%;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--text-main);
+    padding:11px 14px;
+    border-radius:10px;
+    font-size:14.5px;
+    outline:none;
+  }
+  .field input:focus{
+    border-color:var(--orange-1);
+  }
+
+  .btn-submit{
+    width:100%;
+    background:linear-gradient(90deg, var(--orange-1), var(--orange-2));
+    color:#1a1206;
+    font-weight:700;
+    font-size:15px;
+    border:none;
+    padding:13px;
+    border-radius:24px;
+    cursor:pointer;
+    margin-top:6px;
+  }
+  .btn-submit:disabled{
+    opacity:0.6;
+    cursor:not-allowed;
+  }
+
+  .msg{
+    margin-top:16px;
+    padding:11px 14px;
+    border-radius:8px;
+    font-size:13.5px;
+    display:none;
+  }
+  .msg.error{
+    display:block;
+    background:rgba(255,107,107,0.1);
+    color:var(--error);
+    border:1px solid var(--error);
+  }
+  .msg.success{
+    display:block;
+    background:rgba(62,232,200,0.1);
+    color:var(--teal);
+    border:1px solid var(--teal);
+  }
+
+  .form-section{
+    display:none;
+  }
+  .form-section.active{
+    display:block;
+  }
+
+  @media (max-width:480px){
+    .auth-card{padding:26px 22px;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="container">
+    <nav>
+      <a href="/" class="logo">Jeeni.Reader AI</a>
+      <a href="/upload.html" class="nav-link">Skip to library →</a>
+    </nav>
+  </div>
+
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <h1 id="cardTitle">Welcome back</h1>
+      <p class="sub" id="cardSub">Sign in to continue to your library.</p>
+
+      <div class="tabs">
+        <button class="tab active" id="tabLogin">Sign in</button>
+        <button class="tab" id="tabRegister">Create account</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div class="form-section active" id="loginSection">
+        <form id="loginForm">
+          <div class="field">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" placeholder="you@example.com" required>
+          </div>
+          <div class="field">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn-submit" id="loginBtn">Sign in</button>
+        </form>
+        <div class="msg" id="loginMsg"></div>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div class="form-section" id="registerSection">
+        <form id="registerForm">
+          <div class="field">
+            <label for="registerName">Full name</label>
+            <input type="text" id="registerName" placeholder="Dhwani Dabhi" required>
+          </div>
+          <div class="field">
+            <label for="registerEmail">Email</label>
+            <input type="email" id="registerEmail" placeholder="you@example.com" required>
+          </div>
+          <div class="field">
+            <label for="registerPassword">Password</label>
+            <input type="password" id="registerPassword" placeholder="At least 6 characters" minlength="6" required>
+          </div>
+          <button type="submit" class="btn-submit" id="registerBtn">Create account</button>
+        </form>
+        <div class="msg" id="registerMsg"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const BACKEND = window.location.origin; // e.g. http://127.0.0.1:5000
+
+    const tabLogin = document.getElementById('tabLogin');
+    const tabRegister = document.getElementById('tabRegister');
+    const loginSection = document.getElementById('loginSection');
+    const registerSection = document.getElementById('registerSection');
+    const cardTitle = document.getElementById('cardTitle');
+    const cardSub = document.getElementById('cardSub');
+
+    function showLogin() {
+      tabLogin.classList.add('active');
+      tabRegister.classList.remove('active');
+      loginSection.classList.add('active');
+      registerSection.classList.remove('active');
+      cardTitle.textContent = 'Welcome back';
+      cardSub.textContent = 'Sign in to continue to your library.';
+    }
+
+    function showRegister() {
+      tabRegister.classList.add('active');
+      tabLogin.classList.remove('active');
+      registerSection.classList.add('active');
+      loginSection.classList.remove('active');
+      cardTitle.textContent = 'Create your account';
+      cardSub.textContent = 'A free account keeps your document history in one place.';
+    }
+
+    tabLogin.addEventListener('click', showLogin);
+    tabRegister.addEventListener('click', showRegister);
+
+    function showMsg(el, type, text) {
+      el.className = `msg ${type}`;
+      el.textContent = text;
+    }
+
+    // ---------------- LOGIN ----------------
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginMsg = document.getElementById('loginMsg');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Signing in...';
+      loginMsg.style.display = 'none';
+
+      try {
+        const res = await fetch(`${BACKEND}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.status === 'success') {
+          // Persist session so upload.html / reader.html can read it back
+          localStorage.setItem('jeeni_token', data.token);
+          localStorage.setItem('jeeni_user', JSON.stringify(data.user));
+
+          showMsg(loginMsg, 'success', '✅ Signed in! Redirecting…');
+          setTimeout(() => { window.location.href = '/upload.html'; }, 600);
+        } else {
+          showMsg(loginMsg, 'error', '❌ ' + (data.detail || 'Invalid email or password.'));
+        }
+      } catch (err) {
+        showMsg(loginMsg, 'error', '❌ Connection error: is the backend running?');
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Sign in';
+      }
+    });
+
+    // ---------------- REGISTER ----------------
+    const registerForm = document.getElementById('registerForm');
+    const registerBtn = document.getElementById('registerBtn');
+    const registerMsg = document.getElementById('registerMsg');
+
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('registerName').value.trim();
+      const email = document.getElementById('registerEmail').value.trim();
+      const password = document.getElementById('registerPassword').value;
+
+      registerBtn.disabled = true;
+      registerBtn.textContent = 'Creating account...';
+      registerMsg.style.display = 'none';
+
+      try {
+        const res = await fetch(`${BACKEND}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.status === 'success') {
+          showMsg(registerMsg, 'success', '✅ Account created! You can sign in now.');
+          registerForm.reset();
+          setTimeout(showLogin, 900);
+        } else {
+          showMsg(registerMsg, 'error', '❌ ' + (data.detail || 'Could not create account.'));
+        }
+      } catch (err) {
+        showMsg(registerMsg, 'error', '❌ Connection error: is the backend running?');
+      } finally {
+        registerBtn.disabled = false;
+        registerBtn.textContent = 'Create account';
+      }
+    });
+  </script>
+</body>
+</html>

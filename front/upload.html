@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your library — Jeeni Reader AI</title>
+    <style>
+        :root {
+            --bg-1: #0d0f0a;
+            --text-main: #f5f2ea;
+            --text-muted: #a9a49a;
+            --orange-1: #ff9d3d;
+            --orange-2: #ff7a1a;
+            --teal: #3ee8c8;
+            --card-bg: rgba(255,255,255,0.03);
+            --card-border: rgba(255,255,255,0.08);
+            --track-bg: rgba(255,255,255,0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(ellipse at top left, #241a10 0%, var(--bg-1) 45%, #0a0b07 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 22px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 44px;
+        }
+        .logo { font-size: 18px; font-weight: 700; }
+        .nav-right { display: flex; align-items: center; gap: 34px; }
+        .nav-link {
+            display: flex; align-items: center; gap: 8px;
+            color: var(--text-main); text-decoration: none;
+            font-size: 14.5px; font-weight: 600;
+        }
+        .nav-link svg { width: 17px; height: 17px; stroke: var(--text-main); }
+
+        h1 { font-size: 34px; font-weight: 800; margin-bottom: 10px; }
+        .page-sub { color: var(--text-muted); font-size: 15.5px; margin-bottom: 36px; }
+
+        .upload-card {
+            border: 1.5px dashed rgba(255,255,255,0.16);
+            border-radius: 16px; background: rgba(255,255,255,0.02);
+            padding: 60px 30px; text-align: center; margin-bottom: 48px;
+        }
+        .upload-icon {
+            width: 64px; height: 64px; border-radius: 50%;
+            background: rgba(255,157,61,0.12);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 22px;
+        }
+        .upload-icon svg { width: 26px; height: 26px; stroke: var(--orange-1); }
+        .upload-card h2 { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
+        .upload-card .file-types { color: var(--text-muted); font-size: 14px; margin-bottom: 26px; }
+        
+        .btn-choose {
+            background: linear-gradient(90deg, var(--orange-1), var(--orange-2));
+            color: #1a1206; font-weight: 700; font-size: 15px;
+            border: none; padding: 13px 28px; border-radius: 24px;
+            cursor: pointer; box-shadow: 0 8px 22px rgba(255,140,40,0.25);
+            transition: 0.2s;
+        }
+        .btn-choose:hover { filter: brightness(1.1); }
+        .btn-choose:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .recent-heading {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 19px; font-weight: 700; margin-bottom: 22px;
+        }
+        .recent-heading svg { width: 18px; height: 18px; stroke: var(--teal); }
+
+        .doc-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+        }
+        .doc-card {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 14px; padding: 22px;
+        }
+        .doc-top {
+            display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px;
+        }
+        .doc-icon {
+            width: 38px; height: 38px; border-radius: 8px;
+            background: rgba(255,157,61,0.12);
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .doc-icon svg { width: 19px; height: 19px; stroke: var(--orange-1); }
+        .doc-icon.img-type { background: rgba(62,232,200,0.12); }
+        .doc-icon.img-type svg { stroke: var(--teal); }
+        .doc-info { flex: 1; }
+        .doc-info h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+        .doc-info p { color: var(--text-muted); font-size: 13.5px; }
+
+        .progress-track {
+            width: 100%; height: 5px; background: var(--track-bg);
+            border-radius: 4px; overflow: hidden; margin-bottom: 14px;
+        }
+        .progress-fill {
+            height: 100%; background: linear-gradient(90deg, var(--orange-1), var(--orange-2));
+            border-radius: 4px;
+        }
+
+        .doc-bottom {
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .doc-bottom .page-status { color: var(--text-muted); font-size: 13.5px; }
+
+        .btn-open {
+            display: flex; align-items: center; gap: 7px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14);
+            color: var(--text-main); font-weight: 600; font-size: 13.5px;
+            padding: 9px 16px; border-radius: 20px; cursor: pointer; text-decoration: none;
+        }
+        .btn-open svg { width: 15px; height: 15px; stroke: currentColor; }
+        .btn-open:hover { background: rgba(255,255,255,0.08); }
+
+        .status-msg {
+            margin-top: 20px; padding: 12px; border-radius: 8px; display: none; font-size: 14px;
+        }
+        .status-msg.success { display: block; background: rgba(62,232,200,0.1); color: var(--teal); border: 1px solid var(--teal); }
+        .status-msg.error { display: block; background: rgba(255,107,107,0.1); color: #ff6b6b; border: 1px solid #ff6b6b; }
+        .status-msg.info { display: block; background: rgba(255,157,61,0.1); color: var(--orange-1); border: 1px solid var(--orange-1); }
+
+        @media (max-width: 800px) {
+            .doc-grid { grid-template-columns: 1fr; }
+            nav { flex-wrap: wrap; gap: 14px; }
+            h1 { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <nav>
+            <div class="logo">Jeeni.Reader AI</div>
+            <div class="nav-right">
+                <a href="/" class="nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    Library
+                </a>
+            </div>
+        </nav>
+
+        <h1>Your library</h1>
+        <p class="page-sub">Upload a document and Jeeni extracts its text.</p>
+
+        <div class="upload-card">
+            <div class="upload-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <h2>Drop a file here or choose one</h2>
+            <p class="file-types">PDF · DOCX · PPTX · TXT · JPG / PNG (OCR)</p>
+            <button class="btn-choose" id="uploadBtn">Choose a document</button>
+            <div id="status" class="status-msg"></div>
+        </div>
+
+        <div class="recent-heading">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Recent documents
+        </div>
+
+        <div class="doc-grid" id="historyGrid">
+            <div style="grid-column: 1 / -1; color: var(--text-muted); text-align: center; padding: 20px;">Loading history...</div>
+        </div>
+    </div>
+
+    <script>
+        const BACKEND = 'http://127.0.0.1:5000';
+        // 🟢 Reader page that has Read Aloud + Translate + Voice Command
+        const READER_PAGE = '/reader.html';
+
+        const uploadBtn = document.getElementById('uploadBtn');
+        const statusDiv = document.getElementById('status');
+        const historyGrid = document.getElementById('historyGrid');
+
+        window.onload = function() {
+            fetchHistory();
+        };
+
+        async function fetchHistory() {
+            try {
+                const res = await fetch(`${BACKEND}/history`);
+                if (!res.ok) throw new Error("Failed to fetch");
+                const data = await res.json();
+                renderHistory(data);
+            } catch (err) {
+                historyGrid.innerHTML = `<div style="grid-column: 1 / -1; color: #ff6b6b; text-align: center;">❌ Error loading history. Is backend running?</div>`;
+            }
+        }
+
+        function renderHistory(items) {
+            if (items.length === 0) {
+                historyGrid.innerHTML = `<div style="grid-column: 1 / -1; color: var(--text-muted); text-align: center;">No documents uploaded yet.</div>`;
+                return;
+            }
+
+            let html = '';
+            items.forEach(item => {
+                const pageCount = item.total_pages || 1;
+                const charCount = item.characters || 0;
+                const iconType = item.file_name.toLowerCase().endsWith('.pdf') ? '' : 'img-type';
+
+                // 🟢 FIX: link now carries only file_id — never the extracted
+                // text itself. reader/simple.html fetches the full text from
+                // GET /document/{file_id} on load, so the URL stays short
+                // and never gets truncated by the server's header-size limit.
+                const readerUrl = `${READER_PAGE}?file_id=${encodeURIComponent(item.file_id)}`
+                    + `&fileName=${encodeURIComponent(item.file_name)}`
+                    + `&pages=${pageCount}`;
+
+                html += `
+                    <div class="doc-card">
+                        <div class="doc-top">
+                            <div class="doc-icon ${iconType}">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+                            </div>
+                            <div class="doc-info">
+                                <h3>${item.file_name}</h3>
+                                <p>PDF · ${pageCount} page(s) · ${charCount} characters</p>
+                            </div>
+                        </div>
+                        <div class="progress-track"><div class="progress-fill" style="width: 100%"></div></div>
+                        <div class="doc-bottom">
+                            <span class="page-status">${item.uploaded_at}</span>
+                            <a href="${readerUrl}" class="btn-open">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                                Open reader
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+            historyGrid.innerHTML = html;
+        }
+
+        uploadBtn.addEventListener('click', function() {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.pdf,.docx,.pptx,.txt,.png,.jpg,.jpeg';
+
+            fileInput.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                uploadBtn.innerText = "Uploading...";
+                uploadBtn.disabled = true;
+                statusDiv.className = 'status-msg info';
+                statusDiv.innerText = "Uploading file to Backend...";
+                statusDiv.style.display = 'block';
+
+                try {
+                    const uploadRes = await fetch(`${BACKEND}/upload`, { method: 'POST', body: formData });
+                    const uploadData = await uploadRes.json();
+
+                    if (uploadData.status === 'success') {
+                        statusDiv.className = 'status-msg success';
+                        statusDiv.innerHTML = "✅ " + uploadData.message + "<br>Redirecting to Reader...";
+
+                        // 🟢 FIX: redirect now carries only file_id, never the
+                        // extracted text. Previously the full extracted_text
+                        // was URL-encoded straight into the address bar, which
+                        // silently truncated for anything beyond a short
+                        // document (server request-line/header size limit) —
+                        // that's why the reader page got stuck on "Loading...".
+                        const encodedName = encodeURIComponent(uploadData.file_name || "Document");
+                        const readerUrl = `${READER_PAGE}?file_id=${encodeURIComponent(uploadData.file_id)}`
+                            + `&fileName=${encodedName}`
+                            + `&pages=${uploadData.total_pages}`;
+
+                        window.location.href = readerUrl;
+
+                    } else {
+                        statusDiv.className = 'status-msg error';
+                        statusDiv.innerText = "❌ " + uploadData.message;
+                    }
+
+                } catch (error) {
+                    statusDiv.className = 'status-msg error';
+                    statusDiv.innerText = "❌ Connection Error: Is Backend running?";
+                } finally {
+                    uploadBtn.innerText = "Choose a document";
+                    uploadBtn.disabled = false;
+                }
+            };
+            fileInput.click();
+        });
+    </script>
+</body>
+</html>

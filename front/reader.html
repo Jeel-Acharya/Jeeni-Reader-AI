@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jeeni Reader AI — Reader</title>
+<style>
+  :root{
+    --bg-1:#0d0f0a;
+    --text-main:#f5f2ea;
+    --text-muted:#a9a49a;
+    --orange-1:#ff9d3d;
+    --orange-2:#ff7a1a;
+    --teal:#3ee8c8;
+    --card-bg:rgba(255,255,255,0.03);
+    --card-border:rgba(255,255,255,0.08);
+    --paper:#efe9d8;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: radial-gradient(ellipse at top left, #241a10 0%, var(--bg-1) 45%, #0a0b07 100%);
+    color:var(--text-main);
+    min-height:100vh;
+  }
+
+  .container{
+    max-width:1300px;
+    margin:0 auto;
+    padding:0 40px 60px;
+  }
+
+  nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:22px 0;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+    margin-bottom:30px;
+  }
+  .logo{
+    font-size:18px;
+    font-weight:700;
+  }
+  .nav-right{
+    display:flex;
+    align-items:center;
+    gap:34px;
+  }
+  .nav-link{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:var(--text-muted);
+    text-decoration:none;
+    font-size:14.5px;
+    font-weight:600;
+  }
+  .nav-link svg{
+    width:17px;
+    height:17px;
+    stroke:currentColor;
+  }
+
+  .doc-header{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .doc-header-left{
+    display:flex;
+    align-items:center;
+    gap:16px;
+  }
+  .back-btn{
+    background:none;
+    border:none;
+    color:var(--text-main);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    padding-top:6px;
+  }
+  .back-btn svg{
+    width:22px;
+    height:22px;
+    stroke:currentColor;
+  }
+  .doc-title h1{
+    font-size:24px;
+    font-weight:800;
+    margin-bottom:4px;
+  }
+  .doc-title p{
+    color:var(--text-muted);
+    font-size:13.5px;
+  }
+
+  .btn-voice{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--text-main);
+    font-weight:600;
+    font-size:14px;
+    padding:11px 18px;
+    border-radius:22px;
+    cursor:pointer;
+  }
+  .btn-voice svg{
+    width:16px;
+    height:16px;
+    stroke:currentColor;
+  }
+
+  .progress-track{
+    width:100%;
+    height:5px;
+    background:rgba(255,255,255,0.08);
+    border-radius:4px;
+    overflow:hidden;
+    margin-bottom:28px;
+  }
+  .progress-fill{
+    height:100%;
+    width:22%;
+    background:linear-gradient(90deg, var(--orange-1), var(--orange-2));
+    border-radius:4px;
+    transition:width 0.2s linear;
+  }
+
+  .reader-layout{
+    display:grid;
+    grid-template-columns:1.7fr 1fr;
+    gap:24px;
+    align-items:start;
+  }
+
+  .paper-card{
+    background:var(--paper);
+    border-radius:14px;
+    padding:34px 38px;
+    color:#26221a;
+  }
+  .paper-card p{
+    font-size:15px;
+    line-height:1.85;
+    margin-bottom:0;
+    white-space:pre-wrap;
+  }
+  /* highlight for the word currently being spoken */
+  .paper-card p span.w{
+    transition:background-color 0.15s ease, color 0.15s ease;
+    border-radius:3px;
+  }
+  .paper-card p span.w.active-word{
+    background:linear-gradient(90deg, var(--orange-1), var(--orange-2));
+    color:#1a1206;
+    font-weight:700;
+    padding:1px 2px;
+  }
+  .paper-footer{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-top:1px solid rgba(0,0,0,0.12);
+    margin-top:26px;
+    padding-top:18px;
+  }
+  .page-nav-btn{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:rgba(0,0,0,0.06);
+    border:1px solid rgba(0,0,0,0.12);
+    color:#26221a;
+    font-weight:600;
+    font-size:13.5px;
+    padding:8px 16px;
+    border-radius:20px;
+    cursor:pointer;
+  }
+  .page-nav-btn svg{
+    width:14px;
+    height:14px;
+    stroke:currentColor;
+  }
+  .page-count{
+    color:#6b6555;
+    font-size:14px;
+  }
+
+  .side-card{
+    background:var(--card-bg);
+    border:1px solid var(--card-border);
+    border-radius:14px;
+    padding:22px;
+    margin-bottom:18px;
+  }
+  .side-card-title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--text-main);
+    margin-bottom:18px;
+  }
+  .side-card-title svg{
+    width:15px;
+    height:15px;
+    stroke:var(--orange-1);
+  }
+  .side-card-title.teal svg{
+    stroke:var(--teal);
+  }
+
+  .rowbtns{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+  }
+  .btn-read{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    flex:1;
+    background:linear-gradient(90deg, var(--orange-1), var(--orange-2));
+    color:#1a1206;
+    font-weight:700;
+    font-size:14px;
+    border:none;
+    padding:11px;
+    border-radius:22px;
+    cursor:pointer;
+  }
+  .btn-read:disabled{
+    opacity:0.6;
+    cursor:not-allowed;
+  }
+  .btn-stop{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    flex:1;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--text-muted);
+    font-weight:600;
+    font-size:14px;
+    padding:11px;
+    border-radius:22px;
+    cursor:pointer;
+  }
+  .btn-stop:disabled{
+    opacity:0.4;
+    cursor:not-allowed;
+  }
+  .rowbtns svg{
+    width:14px;
+    height:14px;
+  }
+
+  .speed-label{
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:10px;
+  }
+  input[type="range"]{
+    width:100%;
+    accent-color:var(--orange-1);
+  }
+
+  .lang-select{
+    width:100%;
+    background: #1a1815;
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--text-main);
+    padding:11px 12px;
+    border-radius:8px;
+    font-size:14px;
+    margin-bottom:16px;
+    outline:none;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+  }
+  .lang-select option {
+    background-color: #1a1815;
+    color: var(--text-main);
+    padding: 10px;
+  }
+
+  .btn-teal{
+    width:100%;
+    background:var(--teal);
+    color:#08201b;
+    font-weight:700;
+    font-size:14.5px;
+    border:none;
+    padding:12px;
+    border-radius:22px;
+    cursor:pointer;
+  }
+  .btn-teal:disabled{
+    opacity:0.6;
+    cursor:not-allowed;
+  }
+
+  .btn-dark-pill{
+    width:100%;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--text-main);
+    font-weight:600;
+    font-size:14px;
+    padding:11px;
+    border-radius:22px;
+    cursor:pointer;
+    margin-bottom:14px;
+  }
+
+  /* ✅ New WhatsApp Button Style */
+  .btn-whatsapp {
+    width:100%;
+    background: #25D366; /* WhatsApp Green */
+    color: white;
+    font-weight:700;
+    font-size:14px;
+    border:none;
+    padding:11px;
+    border-radius:22px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .btn-whatsapp:hover {
+    background: #1da851;
+  }
+  .btn-whatsapp:disabled {
+    opacity:0.6;
+    cursor:not-allowed;
+  }
+  .btn-whatsapp svg {
+    width:18px;
+    height:18px;
+    fill:white;
+  }
+
+  .ask-row{
+    display:flex;
+    gap:8px;
+  }
+  .ask-row input{
+    flex:1;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.14);
+    color:var(--text-main);
+    padding:11px 14px;
+    border-radius:22px;
+    font-size:13.5px;
+    outline:none;
+  }
+  .ask-row input::placeholder{
+    color:#6f6a60;
+  }
+  .btn-send{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:linear-gradient(90deg, var(--orange-1), var(--orange-2));
+    border:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .btn-send svg{
+    width:16px;
+    height:16px;
+    stroke:#1a1206;
+  }
+
+  .voice-list-title{
+    font-size:14px;
+    font-weight:700;
+    margin-bottom:10px;
+  }
+  .voice-list-text{
+    color:var(--text-muted);
+    font-size:13.5px;
+    line-height:1.7;
+  }
+
+  @media (max-width:960px){
+    .reader-layout{grid-template-columns:1fr;}
+    nav{flex-wrap:wrap; gap:14px;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="container">
+    <nav>
+      <div class="logo">Jeeni.Reader AI</div>
+      <div class="nav-right">
+        <a href="/upload.html" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Library
+        </a>
+        <a href="/settings" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Settings
+        </a>
+        <a href="/" class="nav-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </a>
+      </div>
+    </nav>
+
+    <div class="doc-header">
+      <div class="doc-header-left">
+        <button class="back-btn" onclick="window.location.href='/upload.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        </button>
+        <div class="doc-title">
+          <h1 id="docName">Loading...</h1>
+          <p id="docMeta">PDF · loading pages</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+    <div class="reader-layout">
+      <div class="paper-card">
+        <p id="docText">Waiting for text to load...</p>
+
+        <div class="paper-footer">
+          <button class="page-nav-btn" style="visibility:hidden;">Previous</button>
+          <span class="page-count" id="pageInfo">Page 1 of 1</span>
+          <button class="page-nav-btn" style="visibility:hidden;">Next</button>
+        </div>
+      </div>
+
+      <div class="sidebar">
+        <div class="side-card">
+          <div class="side-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M19 12c0-1.5-.5-3-1.5-4"/><path d="M15.5 7c1.5 1.5 2.5 3.5 2.5 5"/></svg>
+            Read aloud
+          </div>
+          <div class="rowbtns">
+            <button class="btn-read" id="readPageBtn">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <span id="readBtnLabel">Read page</span>
+            </button>
+            <button class="btn-stop" id="stopBtn" disabled>
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+              Stop
+            </button>
+          </div>
+          <div class="speed-label" id="speedLabel">Speed — 1.0×</div>
+          <input type="range" id="speedSlider" min="0.5" max="2" step="0.1" value="1">
+        </div>
+
+        <!-- 🟢 RESTORED: Voice Command card -->
+        <div class="side-card">
+          <div class="side-card-title teal">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            Voice command
+          </div>
+          <button class="btn-teal" id="voiceCmdBtn" style="display:flex; align-items:center; justify-content:center; gap:8px;">
+            <svg id="voiceCmdIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0;">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="23"/>
+              <line x1="8" y1="23" x2="16" y2="23"/>
+            </svg>
+            <span id="voiceCmdBtnLabel">Enable voice control</span>
+          </button>
+          <p class="voice-list-text" id="voiceCmdStatus" style="margin-top:12px;">
+            Say <strong>"start"</strong> to read, <strong>"stop"</strong> to pause, <strong>"summarize"</strong> then <strong>"read the summary"</strong>, <strong>"translate to hindi"</strong> to translate &amp; auto-read, <strong>"faster"</strong> / <strong>"slower"</strong> for speed.
+          </p>
+        </div>
+
+        <!-- TRANSLATE CARD -->
+        <div class="side-card">
+          <div class="side-card-title teal">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h9"/><path d="M9 5v3c0 5-3 9-6 11"/><path d="M6 15c2.5 0 5-1.5 6.5-4"/><path d="M13 20l4-9 4 9"/><path d="M14.5 17h5"/></svg>
+            Translate Page
+          </div>
+          <select id="langSelect" class="lang-select">
+            <option value="en">English</option>
+            <option value="hi">हिन्दी (Hindi)</option>
+            <option value="gu">ગુજરાતી (Gujarati)</option>
+            <option value="ta">தமிழ் (Tamil)</option>
+            <option value="te">తెలుగు (Telugu)</option>
+            <option value="bn">বাংলা (Bengali)</option>
+            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+            <option value="mr">मराठी (Marathi)</option>
+          </select>
+          <button class="btn-teal" id="translateBtn">Translate &amp; Show</button>
+        </div>
+
+        <div class="side-card">
+          <div class="side-card-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6z"/><path d="M19 14l0.8 2.2L22 17l-2.2 0.8L19 20l-0.8-2.2L16 17l2.2-0.8z"/><path d="M5 14l0.6 1.7L7.3 16.3l-1.7 0.6L5 18.6l-0.6-1.7L2.7 16.3l1.7-0.6z"/></svg>
+            AI Assistant
+          </div>
+          <button class="btn-dark-pill" id="summarizeBtn">Summarise & read</button>
+          
+          <!-- ✅ NEW: WhatsApp Share Button (Initially Hidden) -->
+          <button class="btn-whatsapp" id="whatsappShareBtn" style="display:none;">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            Share on WhatsApp
+          </button>
+          
+          <div class="ask-row">
+            <input type="text" placeholder="Ask about this document…">
+            <button class="btn-send">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const BACKEND = 'http://127.0.0.1:5000';
+
+    // 🔥 Wait for full HTML to load before running JS
+    window.addEventListener('load', function() {
+
+      // ---------------------------------------------------------
+      // 1. Load document text
+      // ---------------------------------------------------------
+      const urlParams = new URLSearchParams(window.location.search);
+      const fileId = urlParams.get('file_id');
+      const legacyText = urlParams.get('text');
+      const fileNameParam = urlParams.get('fileName') || "Uploaded Document";
+      const totalPagesParam = urlParams.get('pages') || 1;
+
+      const docNameEl = document.getElementById('docName');
+      const docMetaEl = document.getElementById('docMeta');
+      const docTextEl = document.getElementById('docText');
+      const pageInfoEl = document.getElementById('pageInfo');
+      const progressFillEl = document.getElementById('progressFill');
+
+      let fullText = "";
+
+      function applyDocumentData(fileName, totalPages, extractedText) {
+        fullText = extractedText || "";
+        docNameEl.innerText = fileName;
+        docMetaEl.innerText = `PDF · ${totalPages} page(s)`;
+        pageInfoEl.innerText = `Page 1 of ${totalPages}`;
+
+        if (fullText) {
+          renderHighlightableText(fullText);
+          rebuildWordSpanEls();
+        } else {
+          docTextEl.innerText = "No text found for this document.";
+        }
+      }
+
+      async function loadByFileId(id) {
+        try {
+          const res = await fetch(`${BACKEND}/document/${id}`);
+          if (!res.ok) throw new Error('Document not found on server');
+          const data = await res.json();
+          if (data.status === 'success') {
+            applyDocumentData(data.file_name, data.total_pages, data.extracted_text);
+          } else {
+            docTextEl.innerText = "Could not load document text.";
+          }
+        } catch (err) {
+          console.error('Failed to load document by file_id:', err);
+          docTextEl.innerText = "❌ Could not reach backend to load this document. Is the server running?";
+        }
+      }
+
+      if (fileId) {
+        docNameEl.innerText = "Loading...";
+        loadByFileId(fileId);
+      } else if (legacyText) {
+        applyDocumentData(fileNameParam, totalPagesParam, decodeURIComponent(legacyText));
+      } else {
+        docTextEl.innerText = "No text found. Please upload a document first.";
+      }
+
+      // ---------------------------------------------------------
+      // 2. Word-highlighting helper
+      // ---------------------------------------------------------
+      function renderHighlightableText(rawText) {
+        const parts = rawText.split(/(\s+)/);
+        let html = "";
+        let charPos = 0;
+        const wordSpans = [];
+
+        parts.forEach((part) => {
+          if (part.trim().length === 0) {
+            html += part;
+          } else {
+            const start = charPos;
+            const end = charPos + part.length;
+            html += `<span class="w" data-start="${start}" data-end="${end}">${part}</span>`;
+            wordSpans.push({ start, end });
+          }
+          charPos += part.length;
+        });
+
+        docTextEl.innerHTML = html;
+        return wordSpans;
+      }
+
+      let wordSpanEls = [];
+      function rebuildWordSpanEls() {
+        wordSpanEls = Array.from(docTextEl.querySelectorAll('span.w'));
+      }
+
+      function clearHighlight() {
+        wordSpanEls.forEach(el => el.classList.remove('active-word'));
+      }
+
+      function highlightWordAt(charIndex) {
+        for (const el of wordSpanEls) {
+          const start = parseInt(el.dataset.start, 10);
+          const end = parseInt(el.dataset.end, 10);
+          if (charIndex >= start && charIndex < end) {
+            clearHighlight();
+            el.classList.add('active-word');
+            el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            break;
+          }
+        }
+      }
+
+      // ---------------------------------------------------------
+      // 3. Read Aloud using the browser's Web Speech API
+      // ---------------------------------------------------------
+      const readBtn = document.getElementById('readPageBtn');
+      const readBtnLabel = document.getElementById('readBtnLabel');
+      const stopBtn = document.getElementById('stopBtn');
+      const speedSlider = document.getElementById('speedSlider');
+      const speedLabel = document.getElementById('speedLabel');
+
+      let utterance = null;
+      let voicesReady = [];
+
+      function loadVoices() {
+        voicesReady = window.speechSynthesis.getVoices();
+      }
+      loadVoices();
+      if ('onvoiceschanged' in window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+      }
+
+      function pickVoice() {
+        return voicesReady.find(v => v.lang && v.lang.startsWith('en')) || voicesReady[0] || null;
+      }
+
+      function setReadingState(isReading) {
+        readBtn.disabled = isReading;
+        stopBtn.disabled = !isReading;
+        readBtnLabel.textContent = isReading ? 'Reading...' : 'Read page';
+        if (!isReading) {
+          progressFillEl.style.width = '0%';
+        }
+      }
+
+      function readAloud(textToRead) {
+        if (!('speechSynthesis' in window)) {
+          alert('Sorry, your browser does not support text-to-speech. Try Chrome or Edge.');
+          return;
+        }
+        if (!textToRead || textToRead.trim().length < 10) {
+          alert('Text is too short to read.');
+          return;
+        }
+
+        window.speechSynthesis.cancel();
+
+        renderHighlightableText(textToRead);
+        rebuildWordSpanEls();
+
+        utterance = new SpeechSynthesisUtterance(textToRead);
+        utterance.rate = parseFloat(speedSlider.value) || 1.0;
+
+        const voice = pickVoice();
+        if (voice) utterance.voice = voice;
+
+        utterance.onboundary = (event) => {
+          if (event.name && event.name !== 'word') return;
+          if (event.charIndex == null) return;
+
+          highlightWordAt(event.charIndex);
+
+          if (textToRead.length > 0) {
+            const pct = Math.min(100, (event.charIndex / textToRead.length) * 100);
+            progressFillEl.style.width = pct + '%';
+          }
+        };
+
+        utterance.onstart = () => setReadingState(true);
+        utterance.onend = () => {
+          progressFillEl.style.width = '100%';
+          clearHighlight();
+          setReadingState(false);
+        };
+        utterance.onerror = (e) => {
+          console.error('Speech error:', e);
+          clearHighlight();
+          setReadingState(false);
+          if (e.error !== 'interrupted' && e.error !== 'canceled') {
+            alert('❌ Something went wrong while reading aloud.');
+          }
+        };
+
+        window.speechSynthesis.speak(utterance);
+      }
+
+      function stopReading() {
+        window.speechSynthesis.cancel();
+        clearHighlight();
+        setReadingState(false);
+      }
+
+      readBtn.addEventListener('click', () => {
+        const textToRead = fullText || docTextEl.innerText;
+        readAloud(textToRead);
+      });
+
+      stopBtn.addEventListener('click', stopReading);
+
+      speedSlider.addEventListener('input', () => {
+        speedLabel.textContent = `Speed — ${parseFloat(speedSlider.value).toFixed(1)}×`;
+      });
+
+      window.addEventListener('beforeunload', () => {
+        window.speechSynthesis.cancel();
+      });
+
+      // ---------------------------------------------------------
+      // 4. TRANSLATE FEATURE
+      // ---------------------------------------------------------      const translateBtn = document.getElementById('translateBtn');
+      const langSelect = document.getElementById('langSelect');
+
+      async function performTranslate(targetLang, autoRead) {
+        const textToTranslate = fullText || docTextEl.innerText;
+
+        if (!textToTranslate || textToTranslate.length < 10) {
+          alert('Text is too short to translate.');
+          return false;
+        }
+
+        if (translateBtn) {
+          translateBtn.innerText = 'Translating...';
+          translateBtn.disabled = true;
+        }
+
+        try {
+          const response = await fetch(`${BACKEND}/translate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: textToTranslate, target_lang: targetLang })
+          });
+
+          const data = await response.json();
+
+          if (data.status === 'success') {
+            const translatedText = data.translated_text;
+            fullText = translatedText;
+            renderHighlightableText(translatedText);
+            rebuildWordSpanEls();
+            progressFillEl.style.width = '0%';
+            clearHighlight();
+
+            if (langSelect) langSelect.value = targetLang;
+
+            if (autoRead) {
+              readAloud(translatedText);
+            }
+            return true;
+          } else {
+            alert('❌ Translation failed: ' + data.message);
+            return false;
+          }
+
+        } catch (error) {
+          console.error(error);
+          alert(`❌ Connection Error: Is the backend running on ${BACKEND} ?`);
+          return false;
+        } finally {
+          if (translateBtn) {
+            translateBtn.innerText = 'Translate & Show';
+            translateBtn.disabled = false;
+          }
+        }
+      }
+
+      if (translateBtn && langSelect) {
+        translateBtn.addEventListener('click', () => {
+          performTranslate(langSelect.value, false);
+        });
+      } else {
+        console.error("❌ Translate button or Language select not found in HTML!");
+      }
+
+      // ---------------------------------------------------------
+      // 4b. SUMMARIZE FEATURE
+      // ---------------------------------------------------------
+      const summarizeBtn = document.getElementById('summarizeBtn');
+      const whatsappShareBtn = document.getElementById('whatsappShareBtn');
+      let summaryText = "";
+
+      async function performSummarize(autoRead) {
+        const textToSummarize = fullText || docTextEl.innerText;
+
+        if (!textToSummarize || textToSummarize.trim().length < 20) {
+          alert('Text is too short to summarize.');
+          return false;
+        }
+
+        if (summarizeBtn) {
+          summarizeBtn.innerText = 'Summarizing...';
+          summarizeBtn.disabled = true;
+        }
+
+        try {
+          const response = await fetch(`${BACKEND}/summarize`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: textToSummarize, max_sentences: 5 })
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.status === 'success') {
+            summaryText = data.summary;
+
+            // Show the summary on screen
+            renderHighlightableText(summaryText);
+            rebuildWordSpanEls();
+            progressFillEl.style.width = '0%';
+            clearHighlight();
+            docMetaEl.innerText = `Summary · ${summaryText.split(/\s+/).length} words`;
+
+            // ✅ Show WhatsApp Share Button
+            whatsappShareBtn.style.display = 'flex';
+
+            if (autoRead) {
+              readAloud(summaryText);
+            }
+            return true;
+          } else {
+            const detail = data.message || data.detail || `HTTP ${response.status}`;
+            alert(`❌ Summarize failed: ${detail}${!response.ok ? ' — is the backend running the latest app.py with /summarize? Try restarting it.' : ''}`);
+            return false;
+          }
+        } catch (error) {
+          console.error(error);
+          alert(`❌ Connection Error: Is the backend running on ${BACKEND} ?`);
+          return false;
+        } finally {
+          if (summarizeBtn) {
+            summarizeBtn.innerText = 'Summarise & read';
+            summarizeBtn.disabled = false;
+          }
+        }
+      }
+
+      if (summarizeBtn) {
+        // Manual button = summarize AND read immediately
+        summarizeBtn.addEventListener('click', () => {
+          performSummarize(true);
+        });
+      }
+
+      // ✅ WhatsApp Share Logic
+      whatsappShareBtn.addEventListener('click', () => {
+        if (!summaryText || summaryText.trim().length === 0) {
+          alert('No summary to share. Please generate a summary first.');
+          return;
+        }
+
+        // WhatsApp Deep Link (wa.me)
+        const message = encodeURIComponent(`📄 Jeeni AI Document Summary:\n\n${summaryText}`);
+        const whatsappUrl = `https://wa.me/?text=${message}`;
+        
+        // Open WhatsApp in a new tab
+        window.open(whatsappUrl, '_blank');
+      });
+
+      // ---------------------------------------------------------
+      // 5. Voice Command Automation
+      // ---------------------------------------------------------
+      const voiceCmdBtn = document.getElementById('voiceCmdBtn');
+      const voiceCmdIcon = document.getElementById('voiceCmdIcon');
+      const voiceCmdBtnLabel = document.getElementById('voiceCmdBtnLabel');
+      const voiceCmdStatus = document.getElementById('voiceCmdStatus');
+
+      if (!voiceCmdBtn) {
+        console.error("❌ voiceCmdBtn not found — voice command card missing from HTML.");
+      } else {
+
+        const ICON_MIC = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0;">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>`;
+
+        const ICON_MIC_ACTIVE = `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:14px;height:14px;flex-shrink:0;">
+            <circle cx="12" cy="12" r="6"/>
+          </svg>`;
+
+        const ICON_PLAY = `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:14px;height:14px;flex-shrink:0; display:inline-block; vertical-align:-2px; margin-right:4px;">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>`;
+
+        const ICON_STOP = `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none" style="width:14px;height:14px;flex-shrink:0; display:inline-block; vertical-align:-2px; margin-right:4px;">
+            <rect x="6" y="6" width="12" height="12" rx="1"/>
+          </svg>`;
+
+        const ICON_ALERT = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0; display:inline-block; vertical-align:-2px; margin-right:4px;">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>`;
+
+        const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let voiceCmdActive = false;
+        let restartTimer = null;
+
+        const START_WORDS = ['start', 'read', 'play', 'begin', 'shuru', 'chalu', 'padho'];
+        const STOP_WORDS   = ['stop', 'pause', 'ruko', 'band'];
+        const TRANSLATE_WORDS = ['translate', 'anuvad', 'tarjuma', 'tarjuma karo', 'anuvad karo'];
+        const FASTER_WORDS = ['faster', 'speed up', 'tez', 'jaldi'];
+        const SLOWER_WORDS = ['slower', 'slow down', 'dheere', 'aahista'];
+        const SUMMARIZE_WORDS = ['summarize', 'summarise', 'saransh', 'summary banao', 'summarize this'];
+        const READ_SUMMARY_WORDS = ['read the summary', 'read summary', 'read the summarized content', 'read summarized', 'summary padho'];
+
+        const LANG_NAME_TO_CODE = {
+          'english': 'en',
+          'hindi': 'hi', 'hindee': 'hi',
+          'gujarati': 'gu', 'gujrati': 'gu',
+          'tamil': 'ta',
+          'telugu': 'te',
+          'bengali': 'bn', 'bangla': 'bn',
+          'kannada': 'kn',
+          'marathi': 'mr'
+        };
+
+        function matchesCommand(transcript, wordList) {
+          const t = transcript.toLowerCase();
+          return wordList.some(w => t.includes(w));
+        }
+
+        function detectLangFromTranscript(transcript) {
+          const t = transcript.toLowerCase();
+          for (const name in LANG_NAME_TO_CODE) {
+            if (t.includes(name)) return LANG_NAME_TO_CODE[name];
+          }
+          return null;
+        }
+
+        function adjustSpeed(delta) {
+          const current = parseFloat(speedSlider.value) || 1.0;
+          let next = Math.round((current + delta) * 10) / 10;
+          next = Math.max(parseFloat(speedSlider.min), Math.min(parseFloat(speedSlider.max), next));
+          speedSlider.value = next;
+          speedLabel.textContent = `Speed — ${next.toFixed(1)}×`;
+          return next;
+        }
+
+        function handleVoiceTranscript(transcript) {
+          console.log('Heard:', transcript);
+
+          if (matchesCommand(transcript, STOP_WORDS)) {
+            voiceCmdStatus.innerHTML = `${ICON_STOP}Heard "<strong>${transcript}</strong>" — stopping.`;
+            stopReading();
+            return;
+          }
+
+          if (matchesCommand(transcript, READ_SUMMARY_WORDS)) {
+            if (!summaryText) {
+              voiceCmdStatus.innerHTML = `${ICON_ALERT}No summary yet — say "summarize" first.`;
+              return;
+            }
+            voiceCmdStatus.innerHTML = `${ICON_PLAY}Heard "<strong>${transcript}</strong>" — reading the summary.`;
+            readAloud(summaryText);
+            return;
+          }
+
+          if (matchesCommand(transcript, SUMMARIZE_WORDS)) {
+            voiceCmdStatus.innerHTML = `${ICON_PLAY}Heard "<strong>${transcript}</strong>" — summarizing…`;
+            performSummarize(false).then((success) => {
+              if (success) {
+                voiceCmdStatus.innerHTML = `${ICON_PLAY}Summary ready. Say "<strong>read the summary</strong>" to hear it.`;
+              }
+            });
+            return;
+          }
+
+          if (matchesCommand(transcript, TRANSLATE_WORDS)) {
+            const detectedLang = detectLangFromTranscript(transcript);
+            const targetLang = detectedLang || (langSelect ? langSelect.value : 'hi');
+            const langLabel = langSelect
+              ? (Array.from(langSelect.options).find(o => o.value === targetLang) || {}).text || targetLang
+              : targetLang;
+
+            voiceCmdStatus.innerHTML = `${ICON_PLAY}Heard "<strong>${transcript}</strong>" — translating to ${langLabel} and reading it aloud…`;
+            performTranslate(targetLang, true);
+            return;
+          }
+
+          if (matchesCommand(transcript, FASTER_WORDS)) {
+            const newSpeed = adjustSpeed(0.2);
+            voiceCmdStatus.innerHTML = `${ICON_PLAY}Heard "<strong>${transcript}</strong>" — speed set to ${newSpeed.toFixed(1)}×.`;
+            if (!readBtn.disabled) {
+              readAloud(fullText || docTextEl.innerText);
+            }
+            return;
+          }
+          if (matchesCommand(transcript, SLOWER_WORDS)) {
+            const newSpeed = adjustSpeed(-0.2);
+            voiceCmdStatus.innerHTML = `${ICON_PLAY}Heard "<strong>${transcript}</strong>" — speed set to ${newSpeed.toFixed(1)}×.`;
+            if (!readBtn.disabled) {
+              readAloud(fullText || docTextEl.innerText);
+            }
+            return;
+          }
+
+          if (matchesCommand(transcript, START_WORDS)) {
+            if (!readBtn.disabled) {
+              voiceCmdStatus.innerHTML = `${ICON_PLAY}Heard "<strong>${transcript}</strong>" — starting.`;
+              readAloud(fullText || docTextEl.innerText);
+            } else {
+              voiceCmdStatus.textContent = 'Already reading…';
+            }
+          }
+        }
+
+        window.__jeeniTestTriggerVoice = handleVoiceTranscript;
+
+        function createRecognition() {
+          const rec = new SpeechRecognitionAPI();
+          rec.continuous = true;
+          rec.interimResults = false;
+          rec.lang = 'en-IN';
+
+          rec.onresult = (event) => {
+            const last = event.results[event.results.length - 1];
+            const transcript = last[0].transcript.trim();
+            handleVoiceTranscript(transcript);
+          };
+
+          rec.onerror = (event) => {
+            console.warn('Voice recognition error:', event.error);
+            if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+              voiceCmdStatus.innerHTML = `${ICON_ALERT}Microphone access denied. Please allow mic permission.`;
+              stopVoiceCommand();
+            }
+          };
+
+          rec.onend = () => {
+            if (voiceCmdActive) {
+              restartTimer = setTimeout(() => {
+                try { rec.start(); } catch (e) { /* already started, ignore */ }
+              }, 300);
+            }
+          };
+
+          return rec;
+        }
+
+        function startVoiceCommand() {
+          if (!SpeechRecognitionAPI) {
+            alert('Sorry, voice commands are not supported in this browser. Try Chrome or Edge.');
+            return;
+          }
+
+          recognition = createRecognition();
+          try {
+            recognition.start();
+            voiceCmdActive = true;
+            voiceCmdIcon.outerHTML = ICON_MIC_ACTIVE.replace('<svg ', '<svg id="voiceCmdIcon" ');
+            voiceCmdBtnLabel.textContent = 'Listening… (tap to stop)';
+            voiceCmdBtn.style.background = 'var(--orange-1)';
+            voiceCmdStatus.innerHTML = `Listening… try <strong>"start"</strong>, <strong>"stop"</strong>, <strong>"summarize"</strong>, <strong>"read the summary"</strong>, <strong>"translate to hindi"</strong>, <strong>"faster"</strong>, <strong>"slower"</strong>.`;
+          } catch (e) {
+            console.error('Could not start recognition:', e);
+          }
+        }
+
+        function stopVoiceCommand() {
+          voiceCmdActive = false;
+          clearTimeout(restartTimer);
+          if (recognition) {
+            recognition.onend = null;
+            recognition.stop();
+          }
+          const currentIcon = document.getElementById('voiceCmdIcon');
+          if (currentIcon) {
+            currentIcon.outerHTML = ICON_MIC.replace('<svg ', '<svg id="voiceCmdIcon" ');
+          }
+          voiceCmdBtnLabel.textContent = 'Enable voice control';
+          voiceCmdBtn.style.background = 'var(--teal)';
+          voiceCmdStatus.innerHTML = 'Say <strong>"start"</strong> to read, <strong>"stop"</strong> to pause, <strong>"summarize"</strong> then <strong>"read the summary"</strong>, <strong>"translate to hindi"</strong> to translate &amp; auto-read, <strong>"faster"</strong> / <strong>"slower"</strong> for speed.';
+        }
+
+        voiceCmdBtn.addEventListener('click', () => {
+          if (voiceCmdActive) {
+            stopVoiceCommand();
+          } else {
+            startVoiceCommand();
+          }
+        });
+
+        window.addEventListener('beforeunload', () => {
+          if (recognition) recognition.stop();
+        });
+      }
+
+    }); // End of window.addEventListener('load')
+  </script>
+</body>
+</html>
