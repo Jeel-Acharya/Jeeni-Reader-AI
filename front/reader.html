@@ -45,26 +45,26 @@
   .doc-header-left{ display:flex; align-items:center; gap:16px; }
   .back-btn{ background:none; border:none; color:var(--text-main); cursor:pointer; display:flex; align-items:center; padding-top:6px; }
   .back-btn svg{ width:22px; height:22px; stroke:currentColor; }
-  .doc-title h1{ font-size:24px; font-weight:800; margin-bottom:4px; }
+  .doc-title h1{ font-size:24px; font-weight:800; margin-bottom:4px; word-break: break-word; }
   .doc-title p{ color:var(--text-muted); font-size:13.5px; }
 
   .progress-track{
-    width:100%; height:5px; background:rgba(255,255,255,0.08);
+    width:100%; height:6px; background:rgba(255,255,255,0.08);
     border-radius:4px; overflow:hidden; margin-bottom:28px;
   }
   .progress-fill{
     height:100%; width:0%;
     background:linear-gradient(90deg, var(--orange-1), var(--orange-2));
-    border-radius:4px; transition:width 0.2s linear;
+    border-radius:4px; transition:width 0.3s ease;
   }
 
   .reader-layout{ display:grid; grid-template-columns:1.7fr 1fr; gap:24px; align-items:start; }
 
   .paper-card{ background:var(--paper); border-radius:14px; padding:34px 38px; color:#26221a; min-height:420px; }
-  .paper-card p{ font-size:15px; line-height:1.85; margin-bottom:0; white-space:pre-wrap; }
-  .paper-card p span.w{ transition:background-color 0.15s ease, color 0.15s ease; border-radius:3px; }
-  .paper-card p span.w.active-word{ background:linear-gradient(90deg, var(--orange-1), var(--orange-2)); color:#1a1206; font-weight:700; padding:1px 3px; }
-  .paper-card p span.w.search-highlight { background: #ffeb3b; color: #000; font-weight: bold; padding: 2px 4px; border-radius: 3px; }
+  .doc-text{ font-size:16px; line-height:1.85; margin-bottom:0; white-space:pre-wrap; }
+  .doc-text span.w{ transition:background-color 0.15s ease, color 0.15s ease; border-radius:3px; }
+  .doc-text span.w.active-word{ background:linear-gradient(90deg, var(--orange-1), var(--orange-2)); color:#1a1206; font-weight:700; padding:1px 3px; }
+  .doc-text span.w.search-highlight { background: #ffeb3b; color: #000; font-weight: bold; padding: 2px 4px; border-radius: 3px; }
 
   .paper-footer{ display:flex; align-items:center; justify-content:space-between; border-top:1px solid rgba(0,0,0,0.12); margin-top:26px; padding-top:18px; }
   .page-count{ color:#6b6555; font-size:14px; }
@@ -76,16 +76,21 @@
 
   .rowbtns{ display:flex; gap:10px; margin-bottom:20px; }
   .btn-read{ display:flex; align-items:center; justify-content:center; gap:7px; flex:1; background:linear-gradient(90deg, var(--orange-1), var(--orange-2)); color:#1a1206; font-weight:700; font-size:14px; border:none; padding:11px; border-radius:22px; cursor:pointer; }
+  .btn-read svg{ width:14px; height:14px; }
   .btn-read:disabled{ opacity:0.6; cursor:not-allowed; }
   .btn-stop{ display:flex; align-items:center; justify-content:center; gap:7px; flex:1; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.14); color:var(--text-muted); font-weight:600; font-size:14px; padding:11px; border-radius:22px; cursor:pointer; }
+  .btn-stop svg{ width:14px; height:14px; }
   .btn-stop:disabled{ opacity:0.4; cursor:not-allowed; }
+
+  .speed-label{ font-size:13px; color:var(--text-muted); margin-bottom:8px; }
+  input[type=range]{ width:100%; accent-color: var(--orange-1); }
 
   .lang-select{ width:100%; background: #1a1815; border:1px solid rgba(255,255,255,0.14); color:var(--text-main); padding:11px 12px; border-radius:8px; font-size:14px; margin-bottom:16px; outline:none; cursor: pointer; }
   .btn-teal{ width:100%; background:var(--teal); color:#08201b; font-weight:700; font-size:14.5px; border:none; padding:12px; border-radius:22px; cursor:pointer; }
   .btn-action { background: rgba(255,157,61,0.15); border: 1px solid var(--orange-1); color: var(--orange-1); font-weight: 700; padding: 10px 16px; border-radius: 20px; cursor: pointer; transition: 0.2s; width: 100%; }
   .btn-action:hover { background: var(--orange-1); color: #1a1206; }
 
-  @media (max-width:960px){ .reader-layout{grid-template-columns:1fr;} nav{flex-wrap:wrap; gap:14px;} }
+  @media (max-width:960px){ .reader-layout{grid-template-columns:1fr;} nav{flex-wrap:wrap; gap:14px;} .container{padding:0 18px 60px;} }
 </style>
 </head>
 <body>
@@ -95,7 +100,7 @@
     <nav>
       <div class="logo">Jeeni.Reader AI</div>
       <div class="nav-right">
-        <a href="/upload.html" class="nav-link" id="navLibraryLink">
+        <a href="upload.html" class="nav-link" id="navLibraryLink">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
           Library Vault
         </a>
@@ -105,7 +110,7 @@
     <!-- DOCUMENT HEADER -->
     <div class="doc-header">
       <div class="doc-header-left">
-        <button class="back-btn" onclick="window.location.href='/upload.html'">
+        <button class="back-btn" onclick="window.location.href='upload.html'">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
         </button>
         <div class="doc-title">
@@ -121,7 +126,7 @@
     <div class="reader-layout">
       <!-- PAPER DOCUMENT VIEW -->
       <div class="paper-card">
-        <p id="docText">Waiting for text to load...</p>
+        <div id="docText" class="doc-text">Waiting for text to load...</div>
         <div class="paper-footer">
           <span class="page-count" id="pageInfo">Page 1 of 1</span>
         </div>
@@ -129,7 +134,7 @@
 
       <!-- SIDEBAR CONTROLS (RIGHT SIDE) -->
       <div class="sidebar">
-        <!-- MODULE 3: GEMINI AI SUMMARY COLLECTION BOX (SIDEBAR CARD) -->
+        <!-- GEMINI AI SUMMARY -->
         <div class="side-card" style="border-color: var(--teal);">
           <div class="side-card-title teal" style="justify-content: space-between;">
             <span>🤖 Gemini AI Summary</span>
@@ -146,7 +151,7 @@
                   <button onclick="shareSummaryWhatsApp()" style="background: #25D366; color: #fff; border: none; padding: 6px 10px; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 12px;">
                       💬 WhatsApp
                   </button>
-                  <button onclick="readAloud(activeSummaryText, currentLang)" style="background: var(--teal); color: #08201b; border: none; padding: 6px 10px; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 12px;">
+                  <button onclick="readSummaryAloud()" style="background: var(--teal); color: #08201b; border: none; padding: 6px 10px; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 12px;">
                       🔊 Read Summary
                   </button>
                   <button onclick="copySummaryText()" style="background: rgba(255,255,255,0.1); color: #fff; border: none; padding: 6px 10px; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 12px;">
@@ -161,13 +166,13 @@
           </div>
         </div>
 
-        <!-- MODULE 2: SEARCH PARTICULAR WORD & HIGHLIGHT -->
+        <!-- SEARCH PARTICULAR WORD & HIGHLIGHT -->
         <div class="side-card">
           <div class="side-card-title teal">
             🔍 Search Particular Word
           </div>
-          <input type="text" id="searchInput" placeholder="Type word (e.g. python, exam)..." class="lang-select" style="margin-bottom: 10px;" onkeyup="performWordSearch()" />
-          <p style="font-size: 12px; color: var(--text-muted);" id="searchMatchStatus">Type or say "search python" to highlight &amp; read sentence.</p>
+          <input type="text" id="searchInput" placeholder="Type word (e.g. python, exam)..." class="lang-select" style="margin-bottom: 10px;" onkeyup="onSearchKey(event)" />
+          <p style="font-size: 12px; color: var(--text-muted);" id="searchMatchStatus">Type to highlight. Press Enter (or say "search python") to also read the sentences.</p>
         </div>
 
         <!-- READ ALOUD CARD -->
@@ -188,10 +193,10 @@
           </div>
           <div class="speed-label" id="speedLabel">Speed — 1.0×</div>
           <input type="range" id="speedSlider" min="0.5" max="2" step="0.1" value="1">
-          <p id="voiceBadge" style="font-size:12px; color:var(--text-muted); margin-top:10px;">Voice: Ready</p>
+          <p id="voiceBadge" style="font-size:12px; color:var(--teal); margin-top:10px;">Voice Engine: Ready</p>
         </div>
 
-        <!-- MODULE 1: EXPORT AUDIO & TRANSLATION BUTTONS -->
+        <!-- EXPORT AUDIO & TRANSLATION BUTTONS -->
         <div class="side-card">
           <div class="side-card-title">📥 Export &amp; Downloads</div>
           <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -221,7 +226,7 @@
             <option value="en">English</option>
             <option value="gu">ગુજરાતી (Gujarati)</option>
             <option value="hi">हिन्दी (Hindi)</option>
-            <option value="mr">મરાઠી (Marathi)</option>
+            <option value="mr">मराठी (Marathi)</option>
           </select>
           <button class="btn-teal" id="translateBtn">Translate &amp; Show</button>
         </div>
@@ -230,23 +235,82 @@
   </div>
 
   <script>
-    const BACKEND = 'http://127.0.0.1:5000';
+    const BACKEND = (window.location.origin && window.location.origin !== 'null' && !window.location.origin.startsWith('file'))
+      ? window.location.origin
+      : 'http://127.0.0.1:5000';
 
     let originalText = "";
     let currentText = "";
     let currentLang = "en";
     let currentFileName = "Uploaded Document";
-    let sentenceList = [];
-    let currentSentenceIndex = 0;
+    let currentFileId = "manual";
     let wordSpanEls = [];
     let activeSummaryText = "";
-    let audioPlayer = new Audio();
-    let isReading = false;
+    let archiveCache = [];
 
+    // SPEECH ENGINE STATE
+    let synth = window.speechSynthesis;
+    let audioPlayer = new Audio();
+    audioPlayer.preload = "auto";
+    let isReading = false;
+    let speechSentences = [];
+    let currentSentenceIdx = 0;
+    let currentUtterance = null;      // FIX: was used before without being declared
+    let readSession = 0;              // used to ignore callbacks from an old reading session
+    let ttsFailCount = 0;
+
+    // -------------------------------------------------------------------------
+    // HELPERS
+    // -------------------------------------------------------------------------
+    function escapeHtml(str) {
+      return String(str == null ? "" : str)
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+
+    function setVoiceBadge(msg, isError) {
+      const el = document.getElementById('voiceBadge');
+      if (!el) return;
+      el.innerText = msg;
+      el.style.color = isError ? "#ff6b6b" : "var(--teal)";
+    }
+
+    // Detect which language a text is written in (used for summaries / archive)
+    function detectLang(text, fallback) {
+      if (/[\u0A80-\u0AFF]/.test(text)) return 'gu';
+      if (/[\u0900-\u097F]/.test(text)) return (fallback === 'mr') ? 'mr' : 'hi';
+      return 'en';
+    }
+
+    // -------------------------------------------------------------------------
+    // FIX 1: REAL AUDIO UNLOCK (browser autoplay policy)
+    // A tiny silent WAV is played on the first user click/tap, so later
+    // audioPlayer.play() calls (after fetch/translate) are allowed.
+    // -------------------------------------------------------------------------
+    const SILENT_WAV = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=";
+    let audioUnlocked = false;
+
+    function unlockAudio() {
+      if (audioUnlocked) return;
+      audioUnlocked = true;
+      try {
+        audioPlayer.src = SILENT_WAV;
+        const p = audioPlayer.play();
+        if (p && p.then) p.then(() => audioPlayer.pause()).catch(() => {});
+      } catch (e) {}
+    }
+    ['click', 'touchstart', 'keydown'].forEach(evt =>
+      document.addEventListener(evt, unlockAudio, { once: true, passive: true })
+    );
+
+    // -------------------------------------------------------------------------
+    // PAGE LOAD
+    // -------------------------------------------------------------------------
     window.addEventListener('load', function() {
       const urlParams = new URLSearchParams(window.location.search);
-      const fileId = urlParams.get('file_id');
+      const fileId = urlParams.get('file_id') || urlParams.get('id');
       currentFileName = urlParams.get('fileName') || "Document";
+      if (fileId) currentFileId = fileId;
 
       document.getElementById('docName').innerText = currentFileName;
 
@@ -254,54 +318,73 @@
       fetchSummaryArchive();
     });
 
+    document.getElementById('speedSlider').addEventListener('input', (e) => {
+      const v = parseFloat(e.target.value) || 1.0;
+      document.getElementById('speedLabel').innerText = `Speed — ${v.toFixed(1)}×`;
+      audioPlayer.playbackRate = v;
+      audioPlayer.defaultPlaybackRate = v;
+    });
+
     async function loadByFileId(id) {
       try {
         const res = await fetch(`${BACKEND}/document/${id}`);
         const data = await res.json();
-        if (data.status === 'success') {
-          originalText = data.extracted_text || "";
+        if (data.status === 'success' || data.extracted_text || data.text) {
+          originalText = data.extracted_text || data.text || "";
           currentText = originalText;
-          if (data.file_name) {
-            currentFileName = data.file_name;
+          if (data.file_name || data.filename) {
+            currentFileName = data.file_name || data.filename;
             document.getElementById('docName').innerText = currentFileName;
+          }
+          if (data.total_pages) {
+            document.getElementById('pageInfo').innerText = `${data.total_pages} page(s)`;
           }
           renderHighlightableText(currentText);
         }
       } catch (err) {
-        document.getElementById('docText').innerText = "Error loading document.";
+        document.getElementById('docText').innerText = "Error loading document text.";
       }
     }
 
     function renderHighlightableText(rawText) {
-      sentenceList = rawText.replace(/\n+/g, '. ').split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(s => s.length > 0);
+      if (!rawText) rawText = "No text content available.";
       const parts = rawText.split(/(\s+)/);
       let html = "";
       let charPos = 0;
       parts.forEach((part) => {
+        if (part.length === 0) return;
         if (part.trim().length === 0) {
           html += part;
         } else {
-          html += `<span class="w" data-start="${charPos}" data-end="${charPos + part.length}">${part}</span>`;
+          // FIX: escape text so characters like < or & do not break the page
+          html += `<span class="w" data-start="${charPos}" data-end="${charPos + part.length}">${escapeHtml(part)}</span>`;
         }
         charPos += part.length;
       });
       document.getElementById('docText').innerHTML = html;
-      wordSpanEls = Array.from(document.querySelectorAll('span.w'));
+      wordSpanEls = Array.from(document.querySelectorAll('#docText span.w'));
     }
 
-    // MODULE 2: SEARCH PARTICULAR WORD & HIGHLIGHT
-    function performWordSearch(searchQuery) {
+    // -------------------------------------------------------------------------
+    // SEARCH PARTICULAR WORD & HIGHLIGHT
+    // -------------------------------------------------------------------------
+    function onSearchKey(event) {
+      // Typing only highlights. Enter also reads the matching sentences.
+      performWordSearch(null, event.key === 'Enter');
+    }
+
+    function performWordSearch(searchQuery, speak) {
       const query = (searchQuery || document.getElementById('searchInput').value).toLowerCase().trim();
       const statusEl = document.getElementById('searchMatchStatus');
 
       wordSpanEls.forEach(el => el.classList.remove('search-highlight'));
       if (!query) {
-        statusEl.innerText = "Type or say 'search python' to highlight & read sentence.";
+        statusEl.innerText = 'Type to highlight. Press Enter (or say "search python") to also read the sentences.';
         return;
       }
 
       let matches = 0;
-      let matchingSentences = [];
+      const matchingSentences = [];
 
       wordSpanEls.forEach(el => {
         if (el.innerText.toLowerCase().includes(query)) {
@@ -310,20 +393,24 @@
         }
       });
 
-      sentenceList.forEach(sentence => {
+      const allSentences = currentText.replace(/\n+/g, '. ').split(/(?<=[.!?\u0964])\s+/);
+      allSentences.forEach(sentence => {
         if (sentence.toLowerCase().includes(query)) matchingSentences.push(sentence);
       });
 
       statusEl.innerHTML = `Found <strong>${matches}</strong> word match(es) in <strong>${matchingSentences.length}</strong> sentence(s).`;
 
-      if (matchingSentences.length > 0) {
-        sentenceList = matchingSentences;
-        currentSentenceIndex = 0;
-        readAloud(sentenceList[0], currentLang);
+      const firstMatch = document.querySelector('#docText span.search-highlight');
+      if (firstMatch && speak) firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      if (speak && matchingSentences.length > 0) {
+        readAloud(matchingSentences.join(". "), currentLang);
       }
     }
 
-    // MODULE 1: DOWNLOAD MP3 AUDIO & EXPORT TRANSLATION (.TXT)
+    // -------------------------------------------------------------------------
+    // EXPORT & DOWNLOADS
+    // -------------------------------------------------------------------------
     async function downloadAudioMP3() {
       alert("🔊 Generating MP3 Audio download... Please wait.");
       try {
@@ -332,6 +419,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: currentText, lang: currentLang })
         });
+        if (!res.ok) throw new Error("HTTP " + res.status);
         const blob = await res.blob();
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -341,7 +429,7 @@
         a.click();
         a.remove();
       } catch (e) {
-        alert("Error downloading MP3 audio.");
+        alert("Error downloading MP3 audio. Is gTTS installed on the server?");
       }
     }
 
@@ -352,6 +440,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: currentText, filename: `${currentFileName}_translated.txt` })
         });
+        if (!res.ok) throw new Error("HTTP " + res.status);
         const blob = await res.blob();
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -365,19 +454,26 @@
       }
     }
 
-    // MODULE 3: GEMINI AI SUMMARIZER & COLLECTION BOX ARCHIVE
+    // -------------------------------------------------------------------------
+    // GEMINI AI SUMMARIZER & ARCHIVE
+    // -------------------------------------------------------------------------
     async function generateGeminiSummary() {
       alert(`🤖 Generating Gemini AI Summary for "${currentFileName}"...`);
       try {
         const res = await fetch(`${BACKEND}/summarize`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: currentText, file_name: currentFileName })
+          body: JSON.stringify({
+            text: currentText,
+            file_id: currentFileId,
+            file_name: currentFileName,
+            lang: currentLang          // summary is written in the language currently shown
+          })
         });
         const data = await res.json();
-        if (data.status === 'success') {
+        if (data.status === 'success' || data.summary) {
           activeSummaryText = data.summary;
-          document.getElementById('summaryDocTitle').innerText = `📌 Summary of "${data.file_name}"`;
+          document.getElementById('summaryDocTitle').innerText = `📌 Summary of "${data.file_name || currentFileName}"`;
           document.getElementById('summaryContentText').innerText = data.summary;
           document.getElementById('currentSummaryResult').style.display = 'block';
           fetchSummaryArchive();
@@ -385,30 +481,44 @@
       } catch (e) { alert("Error generating summary."); }
     }
 
+    // FIX 3: read the summary in the language the summary is really written in
+    function readSummaryAloud() {
+      if (!activeSummaryText) {
+        alert("Please generate or select a summary first!");
+        return;
+      }
+      readAloud(activeSummaryText, detectLang(activeSummaryText, currentLang));
+    }
+
     async function fetchSummaryArchive() {
       try {
         const res = await fetch(`${BACKEND}/api/summaries`);
         const data = await res.json();
-        if (data.status === 'success') renderSummaryArchive(data.summaries);
+        if (data.status === 'success' || Array.isArray(data.summaries)) {
+          renderSummaryArchive(data.summaries || []);
+        }
       } catch (e) {}
     }
 
     function renderSummaryArchive(summaries) {
+      archiveCache = summaries || [];
       const container = document.getElementById('summaryArchiveList');
-      if (!summaries || summaries.length === 0) {
+      if (archiveCache.length === 0) {
         container.innerHTML = `<div style="color: var(--text-muted); font-size: 12px;">No saved summaries yet.</div>`;
         return;
       }
       let html = "";
-      summaries.forEach(s => {
+      // FIX: use array index in onclick, so file names with ' or " cannot break the HTML
+      archiveCache.forEach((s, i) => {
+        const sName = s.file_name || "Summary";
         html += `
           <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 8px; display: flex; justify-content: space-between; align-items: center;">
             <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px;">
-              <strong style="color: #ff9d3d; font-size: 12px;">📄 ${s.file_name}</strong>
+              <strong style="color: #ff9d3d; font-size: 12px;">📄 ${escapeHtml(sName)}</strong>
             </div>
             <div style="display: flex; gap: 4px;">
-              <button onclick="viewArchivedSummary('${encodeURIComponent(s.file_name)}', '${encodeURIComponent(s.summary_text)}')" style="background: rgba(62,232,200,0.15); color: #3ee8c8; border: none; padding: 3px 8px; border-radius: 10px; cursor: pointer; font-size: 11px;">View</button>
-              <button onclick="deleteSummaryFromArchive('${s.id}')" style="background: transparent; color: #ff6b6b; border: none; cursor: pointer; font-size: 12px;">🗑️</button>
+              <button onclick="viewArchivedSummary(${i})" style="background: rgba(62,232,200,0.15); color: #3ee8c8; border: none; padding: 3px 8px; border-radius: 10px; cursor: pointer; font-size: 11px;">View</button>
+              <button onclick="deleteSummaryFromArchive(${i})" style="background: transparent; color: #ff6b6b; border: none; cursor: pointer; font-size: 12px;">🗑️</button>
             </div>
           </div>
         `;
@@ -416,16 +526,23 @@
       container.innerHTML = html;
     }
 
-    function viewArchivedSummary(encodedName, encodedText) {
-      activeSummaryText = decodeURIComponent(encodedText);
-      document.getElementById('summaryDocTitle').innerText = `📌 Summary of "${decodeURIComponent(encodedName)}"`;
+    function viewArchivedSummary(index) {
+      const s = archiveCache[index];
+      if (!s) return;
+      activeSummaryText = s.summary_text || "";
+      document.getElementById('summaryDocTitle').innerText = `📌 Summary of "${s.file_name || 'Summary'}"`;
       document.getElementById('summaryContentText').innerText = activeSummaryText;
       document.getElementById('currentSummaryResult').style.display = 'block';
     }
 
-    async function deleteSummaryFromArchive(id) {
-      await fetch(`${BACKEND}/api/summaries/${id}`, { method: 'DELETE' });
-      fetchSummaryArchive();
+    async function deleteSummaryFromArchive(index) {
+      const s = archiveCache[index];
+      if (!s) return;
+      const sId = s.id || s.summary_id;
+      try {
+        await fetch(`${BACKEND}/api/summaries/${sId}`, { method: 'DELETE' });
+        fetchSummaryArchive();
+      } catch(e) {}
     }
 
     function shareSummaryWhatsApp() {
@@ -442,104 +559,285 @@
       alert("Summary copied to clipboard!");
     }
 
-    // DUAL TTS & VOICE COMMAND ENGINE
-    function readAloud(text, lang) {
-      if (!text) return;
+    // -------------------------------------------------------------------------
+    // FIX 2: SPLIT TEXT INTO SHORT SPEECH CHUNKS
+    // Gujarati/Hindi text from Google often has no "." so sentences became huge
+    // and the server cut them at 600 chars. Now every chunk is <= maxLen chars.
+    // -------------------------------------------------------------------------
+    function splitIntoSpeechChunks(text, maxLen = 180) {
+      const rough = text.replace(/\n+/g, '. ').split(/(?<=[.!?\u0964])\s+/);
+      const chunks = [];
+      rough.forEach(s => {
+        let cleaned = s
+          .replace(/[\u2190-\u21FF\u2600-\u26FF\u2700-\u27BF•▪▸►↓↑→←*_#`~]/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+        if (cleaned.length < 2) return;
+        if (!/[a-zA-Z\u0A80-\u0AFF\u0900-\u097F]/.test(cleaned)) return;
+
+        while (cleaned.length > maxLen) {
+          let cut = cleaned.lastIndexOf(' ', maxLen);
+          if (cut <= 0) cut = maxLen;
+          chunks.push(cleaned.slice(0, cut).trim());
+          cleaned = cleaned.slice(cut).trim();
+        }
+        if (cleaned) chunks.push(cleaned);
+      });
+      return chunks;
+    }
+
+    // -------------------------------------------------------------------------
+    // READ ALOUD ENGINE
+    // -------------------------------------------------------------------------
+    function readAloud(textToRead, lang) {
+      stopReading();
+
+      const targetText = textToRead || currentText;
+      if (!targetText || targetText.trim().length === 0) return;
+
+      const targetLang = lang || currentLang;
+      const sentences = splitIntoSpeechChunks(targetText);
+      if (sentences.length === 0) return;
+
+      const session = ++readSession;
       isReading = true;
+      ttsFailCount = 0;
       document.getElementById('readPageBtn').disabled = true;
       document.getElementById('stopBtn').disabled = false;
 
-      const ttsUrl = `${BACKEND}/tts?text=${encodeURIComponent(sentenceList[currentSentenceIndex] || text.substring(0,250))}&lang=${lang}`;
-      audioPlayer.src = ttsUrl;
-      audioPlayer.playbackRate = parseFloat(document.getElementById('speedSlider').value) || 1.0;
-      audioPlayer.onended = () => {
-        if (isReading && currentSentenceIndex < sentenceList.length - 1) {
-          currentSentenceIndex++;
-          readAloud(sentenceList[currentSentenceIndex], lang);
-        } else {
-          stopReading();
-        }
-      };
-      audioPlayer.play();
+      if (targetLang === 'gu' || targetLang === 'hi' || targetLang === 'mr') {
+        // ---- Gujarati / Hindi / Marathi: server-side Google voice (/tts) ----
+        document.getElementById('readBtnLabel').innerText = "Reading (" + targetLang.toUpperCase() + ")...";
+        setVoiceBadge("Voice Engine: Google voice (" + targetLang.toUpperCase() + ")", false);
+
+        let idx = 0;
+        const playNextSentence = () => {
+          if (!isReading || session !== readSession) return;
+          if (idx >= sentences.length) { stopReading(); return; }
+
+          const progressPercent = Math.round(((idx + 1) / sentences.length) * 100);
+          document.getElementById('progressFill').style.width = progressPercent + '%';
+
+          const ttsUrl = `${BACKEND}/tts?text=${encodeURIComponent(sentences[idx])}&lang=${targetLang}`;
+
+          const skip = (reason, err) => {
+            if (!isReading || session !== readSession) return;
+            console.error(reason, err || "", ttsUrl);
+            ttsFailCount++;
+            if (ttsFailCount >= 3) {
+              setVoiceBadge("Voice failed 3 times. Check server terminal & that gTTS is installed.", true);
+              stopReading(true);
+              return;
+            }
+            idx++;
+            playNextSentence();
+          };
+
+          audioPlayer.onended = () => {
+            if (!isReading || session !== readSession) return;
+            ttsFailCount = 0;
+            idx++;
+            playNextSentence();
+          };
+          audioPlayer.onerror = (err) => skip("TTS audio error for:", err);
+
+          audioPlayer.src = ttsUrl;
+          const rate = parseFloat(document.getElementById('speedSlider').value) || 1.0;
+          audioPlayer.defaultPlaybackRate = rate;
+          audioPlayer.playbackRate = rate;
+
+          const p = audioPlayer.play();
+          if (p && p.catch) p.catch(e => {
+            // AbortError happens when we change src on purpose, ignore it
+            if (e && e.name === 'AbortError') return;
+            skip("Audio play failed:", e);
+          });
+        };
+        playNextSentence();
+
+      } else {
+        // ---- English: browser speech synthesis ----
+        document.getElementById('readBtnLabel').innerText = "Reading...";
+        setVoiceBadge("Voice Engine: Browser voice (EN)", false);
+        speechSentences = sentences;
+        currentSentenceIdx = 0;
+        speakNextSentence(session);
+      }
     }
 
-    function stopReading() {
+    function speakNextSentence(session) {
+      if (!isReading || session !== readSession) return;
+      if (currentSentenceIdx >= speechSentences.length) { stopReading(); return; }
+
+      const sentence = speechSentences[currentSentenceIdx];
+      const progressPercent = Math.round(((currentSentenceIdx + 1) / speechSentences.length) * 100);
+      document.getElementById('progressFill').style.width = progressPercent + '%';
+
+      if (synth && 'speechSynthesis' in window) {
+        try {
+          currentUtterance = new SpeechSynthesisUtterance(sentence);
+          currentUtterance.rate = parseFloat(document.getElementById('speedSlider').value) || 1.0;
+          currentUtterance.lang = 'en-US';
+
+          const next = () => {
+            if (isReading && session === readSession) {
+              currentSentenceIdx++;
+              speakNextSentence(session);
+            }
+          };
+          currentUtterance.onend = next;
+          currentUtterance.onerror = next;
+
+          synth.speak(currentUtterance);
+        } catch (e) {
+          currentSentenceIdx++;
+          speakNextSentence(session);
+        }
+      } else {
+        setVoiceBadge("This browser has no speech synthesis.", true);
+        stopReading(true);
+      }
+    }
+
+    function stopReading(keepBadge) {
       isReading = false;
-      audioPlayer.pause();
+      readSession++;                      // invalidates any pending callbacks
+      if (synth) {
+        try { synth.cancel(); } catch(e){}
+      }
+      if (audioPlayer) {
+        try {
+          audioPlayer.onended = null;
+          audioPlayer.onerror = null;
+          audioPlayer.pause();
+          audioPlayer.currentTime = 0;
+        } catch(e){}
+      }
       document.getElementById('readPageBtn').disabled = false;
       document.getElementById('stopBtn').disabled = true;
+      document.getElementById('readBtnLabel').innerText = "Read page";
+      if (!keepBadge) setVoiceBadge("Voice Engine: Ready", false);
     }
 
-    function restartFromTop() {
-      stopReading();
-      currentSentenceIndex = 0;
+    document.getElementById('readPageBtn').addEventListener('click', () => {
+      unlockAudio();
       readAloud(currentText, currentLang);
-    }
+    });
+    document.getElementById('stopBtn').addEventListener('click', () => stopReading());
 
-    document.getElementById('readPageBtn').addEventListener('click', () => readAloud(currentText, currentLang));
-    document.getElementById('stopBtn').addEventListener('click', stopReading);
-
-    // VOICE COMMAND ENGINE
+    // -------------------------------------------------------------------------
+    // VOICE COMMAND RECOGNITION ENGINE
+    // -------------------------------------------------------------------------
     const voiceBtn = document.getElementById('voiceCmdBtn');
     if (voiceBtn) {
       const SpeechAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (SpeechAPI) {
         const rec = new SpeechAPI();
+        let recActive = false;
         rec.continuous = true;
-        rec.lang = 'en-IN';
+        rec.lang = 'en-US';
+
         rec.onresult = (e) => {
           const txt = e.results[e.results.length - 1][0].transcript.toLowerCase().trim();
           console.log("🗣️ Voice Command Heard:", txt);
           document.getElementById('voiceCmdStatus').innerText = `Heard: "${txt}"`;
 
-          // WhatsApp & Summary Voice Triggers
-          if (txt.includes("share on whatsapp") || txt.includes("whatsapp") || txt.includes("open whatsapp")) shareSummaryWhatsApp();
-          else if (txt.includes("read summary")) readAloud(activeSummaryText, currentLang);
+          if (txt.includes("share on whatsapp") || txt.includes("whatsapp")) shareSummaryWhatsApp();
+          else if (txt.includes("read summary")) readSummaryAloud();
           else if (txt.includes("copy summary")) copySummaryText();
           else if (txt.includes("download audio") || txt.includes("export audio")) downloadAudioMP3();
-          else if (txt.includes("export translation") || txt.includes("download translation")) exportTranslationFile();
-          else if (txt.includes("search ") || txt.includes("find ")) performWordSearch(txt.replace(/^(search|find)\s+/, ''));
+          else if (txt.includes("export translation")) exportTranslationFile();
+          else if (txt.includes("search ") || txt.includes("find ")) performWordSearch(txt.replace(/^.*?\b(search|find)\s+/, ''), true);
           else if (txt.includes("summarize") || txt.includes("summary")) generateGeminiSummary();
-          else if (txt.includes("restart") || txt.includes("start over")) restartFromTop();
-          else if (txt.includes("stop") || txt.includes("pause")) stopReading();
-          else if (txt.includes("start") || txt.includes("play") || txt.includes("resume")) readAloud(currentText, currentLang);
           else if (txt.includes("translate to hindi")) performTranslate('hi');
           else if (txt.includes("translate to gujarati")) performTranslate('gu');
-          else if (txt.includes("open library") || txt.includes("library") || txt.includes("back")) window.location.href = '/upload.html';
+          else if (txt.includes("translate to marathi")) performTranslate('mr');
+          else if (txt.includes("translate to english")) performTranslate('en');
+          else if (txt.includes("stop") || txt.includes("pause")) stopReading();
+          else if (txt.includes("start") || txt.includes("play") || txt.includes("resume") || txt.includes("read")) readAloud(currentText, currentLang);
+          else if (txt.includes("open library") || txt.includes("library") || txt.includes("back")) window.location.href = 'upload.html';
+        };
+
+        rec.onend = () => {
+          // browsers stop recognition after a while, restart it while enabled
+          if (recActive) { try { rec.start(); } catch (e) {} }
         };
 
         voiceBtn.addEventListener('click', () => {
-          rec.start();
-          document.getElementById('voiceCmdBtnLabel').innerText = "Listening…";
-          voiceBtn.style.background = "var(--orange-1)";
+          if (!recActive) {
+            try { rec.start(); } catch (e) {}
+            recActive = true;
+            document.getElementById('voiceCmdBtnLabel').innerText = "Listening… (click to stop)";
+            voiceBtn.style.background = "var(--orange-1)";
+          } else {
+            recActive = false;
+            try { rec.stop(); } catch (e) {}
+            document.getElementById('voiceCmdBtnLabel').innerText = "Enable voice control";
+            voiceBtn.style.background = "var(--teal)";
+          }
         });
+      } else {
+        voiceBtn.addEventListener('click', () => alert("Voice commands need Chrome or Edge."));
       }
     }
 
+    // -------------------------------------------------------------------------
+    // TRANSLATE
+    // -------------------------------------------------------------------------
     const translateBtn = document.getElementById('translateBtn');
     const langSelect = document.getElementById('langSelect');
     if (translateBtn && langSelect) {
       translateBtn.addEventListener('click', () => {
+        unlockAudio();
         performTranslate(langSelect.value);
       });
     }
 
     async function performTranslate(targetLang) {
-      currentLang = targetLang;
+      stopReading();
       if (langSelect) langSelect.value = targetLang;
+
+      const docTextEl = document.getElementById('docText');
+      const oldHtml = docTextEl.innerHTML;
+      const langNames = { en: 'English', hi: 'Hindi (हिन्दी)', gu: 'Gujarati (ગુજરાતી)', mr: 'Marathi (मराठी)' };
+      const langName = langNames[targetLang] || targetLang;
+
+      docTextEl.innerHTML = `<div style="text-align: center; padding: 40px; color: #ff9d3d; font-size: 18px; font-weight: bold;">⏳ Translating document to ${langName}...<br><span style="font-size: 13px; color: #666; font-weight: normal;">Please wait a few seconds...</span></div>`;
+
       try {
+        // English = go back to the original text, no need to call the server
+        if (targetLang === 'en') {
+          currentLang = 'en';
+          currentText = originalText;
+          renderHighlightableText(currentText);
+          readAloud(currentText, 'en');
+          return;
+        }
+
         const res = await fetch(`${BACKEND}/translate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: originalText || currentText, target_lang: targetLang })
         });
         const data = await res.json();
-        if (data.status === 'success') {
+
+        if (data.status === 'success' && data.translated_text && data.translated_text.trim().length > 0) {
+          // FIX: set currentLang ONLY after the translation really worked,
+          // so the text and the voice language always match.
+          currentLang = targetLang;
           currentText = data.translated_text;
           renderHighlightableText(currentText);
           readAloud(currentText, currentLang);
+        } else {
+          docTextEl.innerHTML = oldHtml;
+          wordSpanEls = Array.from(document.querySelectorAll('#docText span.w'));
+          alert("Translation notice: " + (data.message || "Could not translate text."));
         }
-      } catch (e) {}
+      } catch (e) {
+        docTextEl.innerHTML = oldHtml;
+        wordSpanEls = Array.from(document.querySelectorAll('#docText span.w'));
+        alert("Connection error: Cannot reach backend server at " + BACKEND);
+      }
     }
   </script>
 </body>

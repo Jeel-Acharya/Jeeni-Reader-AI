@@ -123,7 +123,7 @@
         .doc-icon.img-type { background: rgba(62,232,200,0.12); }
         .doc-icon.img-type svg { stroke: var(--teal); }
         .doc-info { flex: 1; }
-        .doc-info h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+        .doc-info h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; word-break: break-word; }
         .doc-info p { color: var(--text-muted); font-size: 13.5px; }
 
         .btn-delete-doc {
@@ -171,10 +171,11 @@
         <nav>
             <div class="logo">Jeeni.Reader AI</div>
             <div class="nav-right">
-                <a href="/upload.html" class="nav-link" id="navLibraryBtn">
+                <a href="upload.html" class="nav-link" id="navLibraryBtn">
                     <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                     Library Vault
                 </a>
+                <a href="auth.html" class="nav-link" style="color: var(--text-muted);">Sign Out</a>
             </div>
         </nav>
 
@@ -190,7 +191,7 @@
             <p class="file-types">PDF · DOCX · PPTX · TXT · JPG / PNG (OCR)</p>
             <button class="btn-choose" id="uploadBtn">Choose a document</button>
 
-            <!-- Hidden input for file selection & Robot Framework automation -->
+            <!-- Hidden input for file selection -->
             <input type="file" id="realFileInput" style="display:none;" accept=".pdf,.docx,.pptx,.txt,.png,.jpg,.jpeg,.webp" />
 
             <div id="status" class="status-msg"></div>
@@ -211,7 +212,7 @@
                 <span id="uploadVoiceLabel">Enable voice control</span>
             </button>
             <p style="text-align:center; color:var(--text-muted); font-size:13.5px; margin-top:12px;" id="uploadVoiceStatus">
-                Say <strong>"upload file"</strong> to pick from PC, or say <strong>"open PolicyCheck"</strong> / <strong>"delete test-small"</strong>
+                Say <strong>"upload file"</strong> to pick from PC, or say <strong>"select PolicyCheck"</strong> / <strong>"delete test-small"</strong>
             </p>
         </div>
 
@@ -233,8 +234,11 @@
     </div>
 
     <script>
-        const BACKEND = 'http://127.0.0.1:5000';
-        const READER_PAGE = '/reader.html';
+        const BACKEND = (window.location.origin && window.location.origin !== 'null' && !window.location.origin.startsWith('file'))
+            ? window.location.origin
+            : 'http://127.0.0.1:5000';
+            
+        const READER_PAGE = 'reader.html';
 
         const uploadBtn = document.getElementById('uploadBtn');
         const realFileInput = document.getElementById('realFileInput');
@@ -253,14 +257,21 @@
             try {
                 const res = await fetch(`${BACKEND}/history`);
                 if (!res.ok) throw new Error("Failed to fetch");
-                storedDocsData = await res.json();
+                let data = await res.json();
+                
+                storedDocsData = Array.isArray(data) ? data : (data.documents || data.files || data.history || []);
                 renderHistory(storedDocsData);
             } catch (err) {
-                historyGrid.innerHTML = `<div style="grid-column: 1 / -1; color: #ff6b6b; text-align: center;">❌ Error loading history. Is backend running?</div>`;
+                console.error("Fetch history error:", err);
+                historyGrid.innerHTML = `<div style="grid-column: 1 / -1; color: #ff6b6b; text-align: center;">❌ Error loading history. Is backend running at ${BACKEND}?</div>`;
             }
         }
 
         function renderHistory(items) {
+            if (!Array.isArray(items)) {
+                items = [];
+            }
+
             if (!items || items.length === 0) {
                 historyGrid.innerHTML = `<div style="grid-column: 1 / -1; color: var(--text-muted); text-align: center; padding: 30px;">📁 Storage Vault is empty. Upload a file above to get started!</div>`;
                 vaultStats.innerText = "(0 Files)";
@@ -272,40 +283,41 @@
 
             let html = '';
             items.forEach((item, index) => {
+                const docId = item.file_id || item.id;
                 const pageCount = item.total_pages || 1;
                 const charCount = item.characters || 0;
-                const iconType = item.file_name.toLowerCase().endsWith('.pdf') ? '' : 'img-type';
+                const fileName = item.file_name || item.filename || "Document";
+                const iconType = fileName.toLowerCase().endsWith('.pdf') ? '' : 'img-type';
 
-                const readerUrl = `${READER_PAGE}?file_id=${encodeURIComponent(item.file_id)}`
-                    + `&fileName=${encodeURIComponent(item.file_name)}`
+                const readerUrl = `${READER_PAGE}?file_id=${encodeURIComponent(docId)}`
+                    + `&fileName=${encodeURIComponent(fileName)}`
                     + `&pages=${pageCount}`;
 
                 html += `
                     <div class="doc-card" id="docCard_${index}">
                         <div class="doc-top">
                             <div class="doc-icon ${iconType}">
-                                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="17"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
                             </div>
                             <div class="doc-info">
-                                <h3>#${index + 1}. ${item.file_name}</h3>
+                                <h3>#${index + 1}. ${fileName}</h3>
                                 <p>File · ${pageCount} page(s) · ${charCount} characters</p>
                             </div>
-                            <button class="btn-delete-doc" onclick="deleteDocumentFromVault('${item.file_id}', '${item.file_name}')" title="Delete file from Vault">🗑️</button>
+                            <button class="btn-delete-doc" onclick="deleteDocumentFromVault('${docId}', '${fileName}')" title="Delete file from Vault">🗑️</button>
                         </div>
                         <div class="progress-track"><div class="progress-fill" style="width: 100%"></div></div>
 
-                        <!-- QUICK ACTION BUTTONS -->
                         <div class="doc-bottom" style="flex-wrap: wrap; gap: 8px; margin-top: 10px;">
                             <a href="${readerUrl}" class="btn-open" id="openBtn_${index}">
                                 <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                                 Open reader
                             </a>
 
-                            <button class="btn-open" style="border-color: var(--teal); color: var(--teal);" onclick="quickSummarizeVaultDoc('${item.file_id}', '${item.file_name}')">
+                            <button class="btn-open" style="border-color: var(--teal); color: var(--teal);" onclick="quickSummarizeVaultDoc('${docId}', '${fileName}')">
                                 🤖 AI Summary
                             </button>
 
-                            <button class="btn-open" style="border-color: var(--orange-1); color: var(--orange-1);" onclick="quickDownloadMP3VaultDoc('${item.file_id}', '${item.file_name}')">
+                            <button class="btn-open" style="border-color: var(--orange-1); color: var(--orange-1);" onclick="quickDownloadMP3VaultDoc('${docId}', '${fileName}')">
                                 📥 MP3 Audio
                             </button>
                         </div>
@@ -321,19 +333,19 @@
                 renderHistory(storedDocsData);
                 return;
             }
-            const filtered = storedDocsData.filter(item => item.file_name.toLowerCase().includes(query));
+            const filtered = storedDocsData.filter(item => (item.file_name || item.filename || '').toLowerCase().includes(query));
             renderHistory(filtered);
         }
 
         async function deleteDocumentFromVault(fileId, fileName) {
             if (!confirm(`Are you sure you want to delete "${fileName}" from your Vault?`)) return;
             try {
-                const res = await fetch(`${BACKEND}/api/documents/${fileId}`, { method: 'DELETE' });
+                const res = await fetch(`${BACKEND}/delete/${fileId}`, { method: 'DELETE' });
                 const data = await res.json();
                 if (data.status === 'success') {
                     fetchHistory();
                 } else {
-                    alert("Delete failed: " + data.message);
+                    alert("Delete failed: " + (data.message || data.detail));
                 }
             } catch (e) {
                 alert("Connection error deleting file.");
@@ -345,18 +357,19 @@
             try {
                 const docRes = await fetch(`${BACKEND}/document/${fileId}`);
                 const docData = await docRes.json();
-                if (!docData.extracted_text) throw new Error("Could not fetch document text");
+                const textToUse = docData.extracted_text || docData.text;
+                if (!textToUse) throw new Error("Could not fetch document text");
 
                 const sumRes = await fetch(`${BACKEND}/summarize`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: docData.extracted_text, max_sentences: 3 })
+                    body: JSON.stringify({ text: textToUse, max_sentences: 3, file_id: fileId, file_name: fileName })
                 });
                 const sumData = await sumRes.json();
-                if (sumData.status === 'success') {
+                if (sumData.status === 'success' || sumData.summary) {
                     alert(`📌 GEMINI AI SUMMARY for "${fileName}":\n\n${sumData.summary}`);
                 } else {
-                    alert("Failed to summarize: " + sumData.message);
+                    alert("Failed to summarize: " + (sumData.message || sumData.detail));
                 }
             } catch (e) {
                 alert("Error generating AI Summary.");
@@ -368,9 +381,14 @@
             try {
                 const docRes = await fetch(`${BACKEND}/document/${fileId}`);
                 const docData = await docRes.json();
-                if (!docData.extracted_text) throw new Error("Could not fetch document text");
+                const textToUse = docData.extracted_text || docData.text;
+                if (!textToUse) throw new Error("Could not fetch document text");
 
-                const ttsRes = await fetch(`${BACKEND}/tts?text=${encodeURIComponent(docData.extracted_text.substring(0, 300))}&lang=en`);
+                const ttsRes = await fetch(`${BACKEND}/download_audio`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: textToUse.substring(0, 1500), lang: 'en' })
+                });
                 const blob = await ttsRes.blob();
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement("a");
@@ -405,19 +423,21 @@
                 const uploadRes = await fetch(`${BACKEND}/upload`, { method: 'POST', body: formData });
                 const uploadData = await uploadRes.json();
 
-                if (uploadData.status === 'success') {
+                if (uploadData.status === 'success' || uploadData.id || uploadData.file_id) {
                     statusDiv.className = 'status-msg success';
-                    statusDiv.innerHTML = "✅ " + uploadData.message + "<br>Redirecting to Reader...";
+                    statusDiv.innerHTML = "✅ File processed successfully!<br>Redirecting to Reader...";
 
-                    const encodedName = encodeURIComponent(uploadData.file_name || "Document");
-                    const readerUrl = `${READER_PAGE}?file_id=${encodeURIComponent(uploadData.file_id)}`
+                    const docId = uploadData.file_id || uploadData.id;
+                    const fileNameToUse = uploadData.file_name || uploadData.filename || "Document";
+                    const encodedName = encodeURIComponent(fileNameToUse);
+                    const readerUrl = `${READER_PAGE}?file_id=${encodeURIComponent(docId)}`
                         + `&fileName=${encodedName}`
-                        + `&pages=${uploadData.total_pages}`;
+                        + `&pages=${uploadData.total_pages || 1}`;
 
                     window.location.href = readerUrl;
                 } else {
                     statusDiv.className = 'status-msg error';
-                    statusDiv.innerText = "❌ " + uploadData.message;
+                    statusDiv.innerText = "❌ " + (uploadData.message || uploadData.detail || "Upload failed");
                 }
             } catch (error) {
                 statusDiv.className = 'status-msg error';
@@ -428,7 +448,7 @@
             }
         });
 
-        // VOICE CONTROL FOR FILE VAULT
+        // VOICE CONTROL & DESKTOP RPA AUTOMATION FOR FILE VAULT
         function setupLibraryVoiceControl() {
             const uploadVoiceCmdBtn = document.getElementById('uploadVoiceCmdBtn');
             const uploadVoiceLabel = document.getElementById('uploadVoiceLabel');
@@ -448,22 +468,40 @@
                     return;
                 }
 
-                if (rawText.startsWith("delete ")) {
-                    const fileToDelete = rawText.replace("delete ", "").trim();
-                    const match = storedDocsData.find(d => d.file_name.toLowerCase().includes(fileToDelete));
-                    if (match) {
-                        deleteDocumentFromVault(match.file_id, match.file_name);
+                if (rawText.startsWith("select ") || rawText.startsWith("type ") || rawText.startsWith("pick ")) {
+                    const filenameToType = rawText.replace(/^(select|type|pick)\s+/, '').trim();
+                    uploadVoiceStatus.innerHTML = `🤖 Desktop RPA Typing: "<strong>${filenameToType}</strong>" in Windows Explorer...`;
+                    
+                    try {
+                        realFileInput.click();
+                        setTimeout(async () => {
+                            await fetch(`${BACKEND}/rpa_select_file`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ filename: filenameToType })
+                            });
+                        }, 500);
+                    } catch (e) {
+                        console.error("RPA Error:", e);
                     }
                     return;
                 }
 
-                let targetFilename = rawText.replace(/^(open|select|choose|pick|read)\s+/, '').trim();
+                if (rawText.startsWith("delete ")) {
+                    const fileToDelete = rawText.replace("delete ", "").trim();
+                    const match = storedDocsData.find(d => (d.file_name || d.filename || '').toLowerCase().includes(fileToDelete));
+                    if (match) {
+                        deleteDocumentFromVault(match.file_id || match.id, match.file_name || match.filename);
+                    }
+                    return;
+                }
 
+                let targetFilename = rawText.replace(/^(open|read)\s+/, '').trim();
                 let bestMatch = null;
                 let highestScore = 0;
 
                 storedDocsData.forEach((item, index) => {
-                    let fullName = item.file_name.toLowerCase();
+                    let fullName = (item.file_name || item.filename || '').toLowerCase();
                     const docNumber = (index + 1).toString();
                     let score = 0;
                     if (targetFilename === docNumber || rawText.includes(`number ${docNumber}`)) score = 100;
@@ -476,8 +514,10 @@
                 });
 
                 if (bestMatch && highestScore >= 20) {
-                    uploadVoiceStatus.innerHTML = `✅ Opening <strong>${bestMatch.file_name}</strong>...`;
-                    const readerUrl = `${READER_PAGE}?file_id=${encodeURIComponent(bestMatch.file_id)}&fileName=${encodeURIComponent(bestMatch.file_name)}&pages=${bestMatch.total_pages}`;
+                    const fname = bestMatch.file_name || bestMatch.filename;
+                    const docId = bestMatch.file_id || bestMatch.id;
+                    uploadVoiceStatus.innerHTML = `✅ Opening <strong>${fname}</strong>...`;
+                    const readerUrl = `${READER_PAGE}?file_id=${encodeURIComponent(docId)}&fileName=${encodeURIComponent(fname)}&pages=${bestMatch.total_pages || 1}`;
                     window.location.href = readerUrl;
                 }
             }
@@ -496,7 +536,7 @@
                     } else {
                         recognition = new SpeechRecognitionAPI();
                         recognition.continuous = true;
-                        recognition.lang = 'en-IN';
+                        recognition.lang = 'en-US';
                         recognition.onresult = (e) => {
                             const last = e.results[e.results.length - 1];
                             handleUploadVoiceTranscript(last[0].transcript.trim());

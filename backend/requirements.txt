@@ -1,0 +1,11 @@
+fastapi>=0.100.0
+uvicorn>=0.22.0
+pymupdf>=1.23.0
+gTTS>=2.5.0
+pyttsx3>=2.90
+Pillow>=9.5.0
+requests>=2.31.0
+passlib[bcrypt]>=1.7.4
+deep-translator>=1.11.0
+pydantic>=2.0
+pyautogui>=0.9.54-

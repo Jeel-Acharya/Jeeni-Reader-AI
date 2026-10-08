@@ -184,8 +184,8 @@
 
   <div class="container">
     <nav>
-      <a href="/" class="logo">Jeeni.Reader AI</a>
-      <a href="/upload.html" class="nav-link">Skip to library →</a>
+      <a href="upload.html" class="logo">Jeeni.Reader AI</a>
+      <a href="upload.html" class="nav-link">Skip to library →</a>
     </nav>
   </div>
 
@@ -220,7 +220,7 @@
         <form id="registerForm">
           <div class="field">
             <label for="registerName">Full name</label>
-            <input type="text" id="registerName" placeholder="Dhwani Dabhi" required>
+            <input type="text" id="registerName" placeholder="User Name" required>
           </div>
           <div class="field">
             <label for="registerEmail">Email</label>
@@ -238,7 +238,9 @@
   </div>
 
   <script>
-    const BACKEND = window.location.origin; // e.g. http://127.0.0.1:5000
+    const BACKEND = (window.location.origin && window.location.origin !== 'null' && !window.location.origin.startsWith('file'))
+      ? window.location.origin
+      : 'http://127.0.0.1:5000';
 
     const tabLogin = document.getElementById('tabLogin');
     const tabRegister = document.getElementById('tabRegister');
@@ -246,6 +248,8 @@
     const registerSection = document.getElementById('registerSection');
     const cardTitle = document.getElementById('cardTitle');
     const cardSub = document.getElementById('cardSub');
+    const loginMsg = document.getElementById('loginMsg');
+    const registerMsg = document.getElementById('registerMsg');
 
     function showLogin() {
       tabLogin.classList.add('active');
@@ -254,6 +258,8 @@
       registerSection.classList.remove('active');
       cardTitle.textContent = 'Welcome back';
       cardSub.textContent = 'Sign in to continue to your library.';
+      loginMsg.style.display = 'none';
+      registerMsg.style.display = 'none';
     }
 
     function showRegister() {
@@ -263,6 +269,8 @@
       loginSection.classList.remove('active');
       cardTitle.textContent = 'Create your account';
       cardSub.textContent = 'A free account keeps your document history in one place.';
+      loginMsg.style.display = 'none';
+      registerMsg.style.display = 'none';
     }
 
     tabLogin.addEventListener('click', showLogin);
@@ -271,12 +279,12 @@
     function showMsg(el, type, text) {
       el.className = `msg ${type}`;
       el.textContent = text;
+      el.style.display = 'block';
     }
 
     // ---------------- LOGIN ----------------
     const loginForm = document.getElementById('loginForm');
     const loginBtn = document.getElementById('loginBtn');
-    const loginMsg = document.getElementById('loginMsg');
 
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -295,18 +303,17 @@
         });
         const data = await res.json();
 
-        if (res.ok && data.status === 'success') {
-          // Persist session so upload.html / reader.html can read it back
-          localStorage.setItem('jeeni_token', data.token);
-          localStorage.setItem('jeeni_user', JSON.stringify(data.user));
+        if (res.ok && (data.status === 'success' || data.user)) {
+          if (data.token) localStorage.setItem('jeeni_token', data.token);
+          if (data.user) localStorage.setItem('jeeni_user', JSON.stringify(data.user));
 
           showMsg(loginMsg, 'success', '✅ Signed in! Redirecting…');
-          setTimeout(() => { window.location.href = '/upload.html'; }, 600);
+          setTimeout(() => { window.location.href = 'upload.html'; }, 600);
         } else {
           showMsg(loginMsg, 'error', '❌ ' + (data.detail || 'Invalid email or password.'));
         }
       } catch (err) {
-        showMsg(loginMsg, 'error', '❌ Connection error: is the backend running?');
+        showMsg(loginMsg, 'error', '❌ Connection error: is the backend running at http://127.0.0.1:5000?');
       } finally {
         loginBtn.disabled = false;
         loginBtn.textContent = 'Sign in';
@@ -316,7 +323,6 @@
     // ---------------- REGISTER ----------------
     const registerForm = document.getElementById('registerForm');
     const registerBtn = document.getElementById('registerBtn');
-    const registerMsg = document.getElementById('registerMsg');
 
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -336,7 +342,7 @@
         });
         const data = await res.json();
 
-        if (res.ok && data.status === 'success') {
+        if (res.ok && (data.status === 'success' || data.user)) {
           showMsg(registerMsg, 'success', '✅ Account created! You can sign in now.');
           registerForm.reset();
           setTimeout(showLogin, 900);
@@ -344,7 +350,7 @@
           showMsg(registerMsg, 'error', '❌ ' + (data.detail || 'Could not create account.'));
         }
       } catch (err) {
-        showMsg(registerMsg, 'error', '❌ Connection error: is the backend running?');
+        showMsg(registerMsg, 'error', '❌ Connection error: is the backend running at http://127.0.0.1:5000?');
       } finally {
         registerBtn.disabled = false;
         registerBtn.textContent = 'Create account';
