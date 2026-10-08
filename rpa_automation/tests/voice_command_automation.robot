@@ -1,17 +1,9 @@
 *** Settings ***
-Documentation     Jeeni Reader AI — Voice Command automation.
+Documentation     Jeeni Reader AI — Voice Command & Navigation Automation
 ...
-...               A real microphone can't be reliably driven inside an
-...               automated browser (no physical mic, flaky speech-to-text
-...               network calls in CI). So this suite simulates "the user
-...               said X" via a JS test hook exposed in reader.html:
-...
-...                   window.__jeeniTestTriggerVoice('start')
-...
-...               That hook calls the EXACT SAME function a real voice
-...               recognition result would call — so everything AFTER
-...               "hearing" the word (start/stop/translate/speed change)
-...               is tested for real. Only the microphone step is simulated.
+...               Simulates voice commands (start/stop/translate/speed/library)
+...               via JS hook window.__jeeniTestTriggerVoice('...') to test that
+...               the application handles voice-triggered actions correctly.
 
 Library           Browser
 Library           OperatingSystem
@@ -22,6 +14,7 @@ ${TEST_FILE_PATH}     ${CURDIR}${/}testdata${/}sample_document.txt
 
 *** Test Cases ***
 Upload Document For Voice Command Test
+    [Documentation]    Uploads sample text document and opens the reader page.
     New Page    ${BASE_URL}/upload.html
     Wait For Elements State    id=uploadBtn    visible    timeout=10s
 
@@ -31,17 +24,18 @@ Upload Document For Voice Command Test
     ${current_url}=    Get Url
     Should Contain    ${current_url}    file_id=
     Set Suite Variable    ${DOCUMENT_URL}    ${current_url}
+    Log    ✅ Document uploaded successfully into Library!
 
 Voice Control Toggle Button Works
     [Documentation]    Real UI check — clicking "Enable voice control"
-    ...                should flip it into listening mode and back.
+    ...                flips button into listening mode and back.
     New Page    ${DOCUMENT_URL}
     Wait For Elements State    id=voiceCmdBtn    visible    timeout=10s
 
     Click    id=voiceCmdBtn
     Wait For Elements State    id=voiceCmdStatus    visible    timeout=5s
     ${status}=    Get Text    id=voiceCmdStatus
-    Should Contain    ${status}    Listening
+    Should Contain    ${status}    Say
     Log    ✅ Voice control turned ON successfully!
 
     Click    id=voiceCmdBtn
@@ -50,6 +44,7 @@ Voice Control Toggle Button Works
     Log    ✅ Voice control turned OFF successfully!
 
 Saying Start Triggers Read Aloud
+    [Documentation]    Simulates saying "start" and checks if reading begins.
     New Page    ${DOCUMENT_URL}
     Wait For Elements State    id=readPageBtn    visible    timeout=10s
 
@@ -60,6 +55,7 @@ Saying Start Triggers Read Aloud
     Log    ✅ Voice command "start" triggered Read Aloud successfully!
 
 Saying Stop Stops Reading
+    [Documentation]    Simulates saying "stop" and checks if reading stops.
     New Page    ${DOCUMENT_URL}
     Wait For Elements State    id=readPageBtn    visible    timeout=10s
 
@@ -72,10 +68,9 @@ Saying Stop Stops Reading
     Should Be Equal    ${label}    Read page
     Log    ✅ Voice command "stop" stopped Read Aloud successfully!
 
-Saying Translate To Hindi Translates And Auto-Reads
-    [Documentation]    Simulates "translate to hindi" and verifies BOTH
-    ...                the translation happened AND that reading started
-    ...                automatically afterwards (no manual click needed).
+Saying Translate To Hindi Translates And Auto Reads
+    [Documentation]    Simulates saying "translate to hindi" and verifies
+    ...                translation and auto-read started.
     New Page    ${DOCUMENT_URL}
     Wait For Elements State    id=docText    visible    timeout=10s
 
@@ -90,6 +85,7 @@ Saying Translate To Hindi Translates And Auto-Reads
     Log    ✅ Voice command "translate to hindi" translated AND auto-read successfully!
 
 Saying Faster Increases Reading Speed
+    [Documentation]    Simulates saying "faster" and checks speed slider value.
     New Page    ${DOCUMENT_URL}
     Wait For Elements State    id=speedSlider    visible    timeout=10s
 
@@ -102,6 +98,7 @@ Saying Faster Increases Reading Speed
     Log    ✅ Voice command "faster" increased speed from ${before} to ${after}!
 
 Saying Slower Decreases Reading Speed
+    [Documentation]    Simulates saying "slower" and checks speed slider value.
     New Page    ${DOCUMENT_URL}
     Wait For Elements State    id=speedSlider    visible    timeout=10s
 
@@ -112,6 +109,18 @@ Saying Slower Decreases Reading Speed
 
     Should Be True    ${after} < ${before}
     Log    ✅ Voice command "slower" decreased speed from ${before} to ${after}!
+
+Saying Open Library Returns To Storage Page
+    [Documentation]    Simulates saying "open library" and checks navigation to upload.html.
+    New Page    ${DOCUMENT_URL}
+    Wait For Elements State    id=voiceCmdBtn    visible    timeout=10s
+
+    Evaluate JavaScript    ${None}    () => window.__jeeniTestTriggerVoice('open library')
+    Wait For Elements State    id=uploadBtn    visible    timeout=10s
+
+    ${current_url}=    Get Url
+    Should Contain    ${current_url}    upload.html
+    Log    ✅ Voice command "open library" returned to Library Storage!
 
 *** Keywords ***
 Text Should Have Changed

@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# Local database and uploaded user data
+backend/users.db
+backend/uploads/
+
+# Generated test reports / logs
+log.html
+output.xml
+playwright-log.txt
+report.html
+
+# RPA generated test data
+rpa_automation/tests/testdata/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

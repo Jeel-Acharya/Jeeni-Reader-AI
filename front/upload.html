@@ -27,18 +27,11 @@
             padding: 20px;
         }
 
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+        .container { max-width: 1300px; margin: 0 auto; padding: 0 20px; }
 
         nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 22px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 22px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
             margin-bottom: 44px;
         }
         .logo { font-size: 18px; font-weight: 700; }
@@ -56,7 +49,7 @@
         .upload-card {
             border: 1.5px dashed rgba(255,255,255,0.16);
             border-radius: 16px; background: rgba(255,255,255,0.02);
-            padding: 60px 30px; text-align: center; margin-bottom: 48px;
+            padding: 50px 30px; text-align: center; margin-bottom: 30px;
         }
         .upload-icon {
             width: 64px; height: 64px; border-radius: 50%;
@@ -67,33 +60,60 @@
         .upload-icon svg { width: 26px; height: 26px; stroke: var(--orange-1); }
         .upload-card h2 { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
         .upload-card .file-types { color: var(--text-muted); font-size: 14px; margin-bottom: 26px; }
-        
+
         .btn-choose {
             background: linear-gradient(90deg, var(--orange-1), var(--orange-2));
             color: #1a1206; font-weight: 700; font-size: 15px;
             border: none; padding: 13px 28px; border-radius: 24px;
-            cursor: pointer; box-shadow: 0 8px 22px rgba(255,140,40,0.25);
-            transition: 0.2s;
+            cursor: pointer; box-shadow: 0 8px 22px rgba(255,140,40,0.25); transition: 0.2s;
         }
         .btn-choose:hover { filter: brightness(1.1); }
         .btn-choose:disabled { opacity: 0.5; cursor: not-allowed; }
 
+        .voice-card {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 16px; padding: 24px; margin-bottom: 44px;
+        }
+        .voice-card-title {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 13px; font-weight: 700; text-transform: uppercase;
+            color: var(--teal); margin-bottom: 14px;
+        }
+        .voice-card-title svg { width: 16px; height: 16px; stroke: var(--teal); }
+        .btn-teal {
+            width: 100%; max-width: 320px; background: var(--teal);
+            color: #08201b; font-weight: 700; font-size: 14.5px;
+            border: none; padding: 12px 20px; border-radius: 22px;
+            cursor: pointer; display: flex; align-items: center;
+            justify-content: center; gap: 8px; margin: 0 auto;
+        }
+
+        .vault-header {
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 15px; margin-bottom: 22px;
+        }
         .recent-heading {
             display: flex; align-items: center; gap: 10px;
-            font-size: 19px; font-weight: 700; margin-bottom: 22px;
+            font-size: 19px; font-weight: 700;
         }
         .recent-heading svg { width: 18px; height: 18px; stroke: var(--teal); }
 
-        .doc-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+        .vault-search-box {
+            display: flex; align-items: center; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--card-border); border-radius: 20px; padding: 6px 14px; width: 300px;
         }
+        .vault-search-box input {
+            background: transparent; border: none; outline: none;
+            color: var(--text-main); font-size: 14px; width: 100%; margin-left: 8px;
+        }
+
+        .doc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .doc-card {
             background: var(--card-bg); border: 1px solid var(--card-border);
-            border-radius: 14px; padding: 22px;
+            border-radius: 14px; padding: 22px; transition: border-color 0.2s; position: relative;
         }
-        .doc-top {
-            display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px;
-        }
+        .doc-card:hover { border-color: rgba(255,157,61,0.4); }
+        .doc-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 18px; }
         .doc-icon {
             width: 38px; height: 38px; border-radius: 8px;
             background: rgba(255,157,61,0.12);
@@ -106,6 +126,12 @@
         .doc-info h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
         .doc-info p { color: var(--text-muted); font-size: 13.5px; }
 
+        .btn-delete-doc {
+            background: transparent; border: none; color: #ff6b6b;
+            cursor: pointer; font-size: 16px; opacity: 0.7; transition: 0.2s; padding: 4px;
+        }
+        .btn-delete-doc:hover { opacity: 1; transform: scale(1.1); }
+
         .progress-track {
             width: 100%; height: 5px; background: var(--track-bg);
             border-radius: 4px; overflow: hidden; margin-bottom: 14px;
@@ -115,23 +141,18 @@
             border-radius: 4px;
         }
 
-        .doc-bottom {
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .doc-bottom .page-status { color: var(--text-muted); font-size: 13.5px; }
+        .doc-bottom { display: flex; align-items: center; justify-content: space-between; }
 
         .btn-open {
             display: flex; align-items: center; gap: 7px;
             background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14);
-            color: var(--text-main); font-weight: 600; font-size: 13.5px;
-            padding: 9px 16px; border-radius: 20px; cursor: pointer; text-decoration: none;
+            color: var(--text-main); font-weight: 600; font-size: 13px;
+            padding: 8px 14px; border-radius: 20px; cursor: pointer; text-decoration: none; transition: 0.2s;
         }
-        .btn-open svg { width: 15px; height: 15px; stroke: currentColor; }
-        .btn-open:hover { background: rgba(255,255,255,0.08); }
+        .btn-open svg { width: 14px; height: 14px; stroke: currentColor; }
+        .btn-open:hover { background: rgba(255,255,255,0.12); }
 
-        .status-msg {
-            margin-top: 20px; padding: 12px; border-radius: 8px; display: none; font-size: 14px;
-        }
+        .status-msg { margin-top: 20px; padding: 12px; border-radius: 8px; display: none; font-size: 14px; }
         .status-msg.success { display: block; background: rgba(62,232,200,0.1); color: var(--teal); border: 1px solid var(--teal); }
         .status-msg.error { display: block; background: rgba(255,107,107,0.1); color: #ff6b6b; border: 1px solid #ff6b6b; }
         .status-msg.info { display: block; background: rgba(255,157,61,0.1); color: var(--orange-1); border: 1px solid var(--orange-1); }
@@ -146,19 +167,21 @@
 <body>
 
     <div class="container">
+        <!-- TOP NAV -->
         <nav>
             <div class="logo">Jeeni.Reader AI</div>
             <div class="nav-right">
-                <a href="/" class="nav-link">
+                <a href="/upload.html" class="nav-link" id="navLibraryBtn">
                     <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                    Library
+                    Library Vault
                 </a>
             </div>
         </nav>
 
-        <h1>Your library</h1>
-        <p class="page-sub">Upload a document and Jeeni extracts its text.</p>
+        <h1>Your Stored Documents Vault</h1>
+        <p class="page-sub">All your stored documents, PDFs, and AI scanned pictures in one place.</p>
 
+        <!-- UPLOAD SECTION -->
         <div class="upload-card">
             <div class="upload-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -166,81 +189,125 @@
             <h2>Drop a file here or choose one</h2>
             <p class="file-types">PDF · DOCX · PPTX · TXT · JPG / PNG (OCR)</p>
             <button class="btn-choose" id="uploadBtn">Choose a document</button>
+
+            <!-- Hidden input for file selection & Robot Framework automation -->
+            <input type="file" id="realFileInput" style="display:none;" accept=".pdf,.docx,.pptx,.txt,.png,.jpg,.jpeg,.webp" />
+
             <div id="status" class="status-msg"></div>
         </div>
 
-        <div class="recent-heading">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            Recent documents
+        <!-- VOICE CONTROL FOR LIBRARY STORAGE -->
+        <div class="voice-card">
+            <div class="voice-card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                Voice Navigation & Library Control
+            </div>
+            <button class="btn-teal" id="uploadVoiceCmdBtn">
+                <svg id="uploadVoiceIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:16px; height:16px;">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                </svg>
+                <span id="uploadVoiceLabel">Enable voice control</span>
+            </button>
+            <p style="text-align:center; color:var(--text-muted); font-size:13.5px; margin-top:12px;" id="uploadVoiceStatus">
+                Say <strong>"upload file"</strong> to pick from PC, or say <strong>"open PolicyCheck"</strong> / <strong>"delete test-small"</strong>
+            </p>
+        </div>
+
+        <!-- RECENT STORED DOCUMENTS GRID HEADER & SEARCH -->
+        <div class="vault-header">
+            <div class="recent-heading">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Stored Documents <span id="vaultStats" style="font-size: 13.5px; color: var(--text-muted); font-weight: normal;">(Loading...)</span>
+            </div>
+
+            <div class="vault-search-box">
+                🔍 <input type="text" id="vaultSearchInput" placeholder="Search stored files..." onkeyup="filterVaultDocuments()" />
+            </div>
         </div>
 
         <div class="doc-grid" id="historyGrid">
-            <div style="grid-column: 1 / -1; color: var(--text-muted); text-align: center; padding: 20px;">Loading history...</div>
+            <div style="grid-column: 1 / -1; color: var(--text-muted); text-align: center; padding: 20px;">Loading library vault...</div>
         </div>
     </div>
 
     <script>
         const BACKEND = 'http://127.0.0.1:5000';
-        // 🟢 Reader page that has Read Aloud + Translate + Voice Command
         const READER_PAGE = '/reader.html';
 
         const uploadBtn = document.getElementById('uploadBtn');
+        const realFileInput = document.getElementById('realFileInput');
         const statusDiv = document.getElementById('status');
         const historyGrid = document.getElementById('historyGrid');
+        const vaultStats = document.getElementById('vaultStats');
+
+        let storedDocsData = [];
 
         window.onload = function() {
             fetchHistory();
+            setupLibraryVoiceControl();
         };
 
         async function fetchHistory() {
             try {
                 const res = await fetch(`${BACKEND}/history`);
                 if (!res.ok) throw new Error("Failed to fetch");
-                const data = await res.json();
-                renderHistory(data);
+                storedDocsData = await res.json();
+                renderHistory(storedDocsData);
             } catch (err) {
                 historyGrid.innerHTML = `<div style="grid-column: 1 / -1; color: #ff6b6b; text-align: center;">❌ Error loading history. Is backend running?</div>`;
             }
         }
 
         function renderHistory(items) {
-            if (items.length === 0) {
-                historyGrid.innerHTML = `<div style="grid-column: 1 / -1; color: var(--text-muted); text-align: center;">No documents uploaded yet.</div>`;
+            if (!items || items.length === 0) {
+                historyGrid.innerHTML = `<div style="grid-column: 1 / -1; color: var(--text-muted); text-align: center; padding: 30px;">📁 Storage Vault is empty. Upload a file above to get started!</div>`;
+                vaultStats.innerText = "(0 Files)";
                 return;
             }
 
+            let totalPagesSum = items.reduce((acc, item) => acc + (item.total_pages || 1), 0);
+            vaultStats.innerText = `(${items.length} Files Stored · ${totalPagesSum} Total Pages)`;
+
             let html = '';
-            items.forEach(item => {
+            items.forEach((item, index) => {
                 const pageCount = item.total_pages || 1;
                 const charCount = item.characters || 0;
                 const iconType = item.file_name.toLowerCase().endsWith('.pdf') ? '' : 'img-type';
 
-                // 🟢 FIX: link now carries only file_id — never the extracted
-                // text itself. reader/simple.html fetches the full text from
-                // GET /document/{file_id} on load, so the URL stays short
-                // and never gets truncated by the server's header-size limit.
                 const readerUrl = `${READER_PAGE}?file_id=${encodeURIComponent(item.file_id)}`
                     + `&fileName=${encodeURIComponent(item.file_name)}`
                     + `&pages=${pageCount}`;
 
                 html += `
-                    <div class="doc-card">
+                    <div class="doc-card" id="docCard_${index}">
                         <div class="doc-top">
                             <div class="doc-icon ${iconType}">
-                                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
                             </div>
                             <div class="doc-info">
-                                <h3>${item.file_name}</h3>
-                                <p>PDF · ${pageCount} page(s) · ${charCount} characters</p>
+                                <h3>#${index + 1}. ${item.file_name}</h3>
+                                <p>File · ${pageCount} page(s) · ${charCount} characters</p>
                             </div>
+                            <button class="btn-delete-doc" onclick="deleteDocumentFromVault('${item.file_id}', '${item.file_name}')" title="Delete file from Vault">🗑️</button>
                         </div>
                         <div class="progress-track"><div class="progress-fill" style="width: 100%"></div></div>
-                        <div class="doc-bottom">
-                            <span class="page-status">${item.uploaded_at}</span>
-                            <a href="${readerUrl}" class="btn-open">
+
+                        <!-- QUICK ACTION BUTTONS -->
+                        <div class="doc-bottom" style="flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+                            <a href="${readerUrl}" class="btn-open" id="openBtn_${index}">
                                 <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                                 Open reader
                             </a>
+
+                            <button class="btn-open" style="border-color: var(--teal); color: var(--teal);" onclick="quickSummarizeVaultDoc('${item.file_id}', '${item.file_name}')">
+                                🤖 AI Summary
+                            </button>
+
+                            <button class="btn-open" style="border-color: var(--orange-1); color: var(--orange-1);" onclick="quickDownloadMP3VaultDoc('${item.file_id}', '${item.file_name}')">
+                                📥 MP3 Audio
+                            </button>
                         </div>
                     </div>
                 `;
@@ -248,60 +315,200 @@
             historyGrid.innerHTML = html;
         }
 
-        uploadBtn.addEventListener('click', function() {
-            const fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.accept = '.pdf,.docx,.pptx,.txt,.png,.jpg,.jpeg';
+        function filterVaultDocuments() {
+            const query = document.getElementById("vaultSearchInput").value.toLowerCase().trim();
+            if (!query) {
+                renderHistory(storedDocsData);
+                return;
+            }
+            const filtered = storedDocsData.filter(item => item.file_name.toLowerCase().includes(query));
+            renderHistory(filtered);
+        }
 
-            fileInput.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-
-                const formData = new FormData();
-                formData.append('file', file);
-
-                uploadBtn.innerText = "Uploading...";
-                uploadBtn.disabled = true;
-                statusDiv.className = 'status-msg info';
-                statusDiv.innerText = "Uploading file to Backend...";
-                statusDiv.style.display = 'block';
-
-                try {
-                    const uploadRes = await fetch(`${BACKEND}/upload`, { method: 'POST', body: formData });
-                    const uploadData = await uploadRes.json();
-
-                    if (uploadData.status === 'success') {
-                        statusDiv.className = 'status-msg success';
-                        statusDiv.innerHTML = "✅ " + uploadData.message + "<br>Redirecting to Reader...";
-
-                        // 🟢 FIX: redirect now carries only file_id, never the
-                        // extracted text. Previously the full extracted_text
-                        // was URL-encoded straight into the address bar, which
-                        // silently truncated for anything beyond a short
-                        // document (server request-line/header size limit) —
-                        // that's why the reader page got stuck on "Loading...".
-                        const encodedName = encodeURIComponent(uploadData.file_name || "Document");
-                        const readerUrl = `${READER_PAGE}?file_id=${encodeURIComponent(uploadData.file_id)}`
-                            + `&fileName=${encodedName}`
-                            + `&pages=${uploadData.total_pages}`;
-
-                        window.location.href = readerUrl;
-
-                    } else {
-                        statusDiv.className = 'status-msg error';
-                        statusDiv.innerText = "❌ " + uploadData.message;
-                    }
-
-                } catch (error) {
-                    statusDiv.className = 'status-msg error';
-                    statusDiv.innerText = "❌ Connection Error: Is Backend running?";
-                } finally {
-                    uploadBtn.innerText = "Choose a document";
-                    uploadBtn.disabled = false;
+        async function deleteDocumentFromVault(fileId, fileName) {
+            if (!confirm(`Are you sure you want to delete "${fileName}" from your Vault?`)) return;
+            try {
+                const res = await fetch(`${BACKEND}/api/documents/${fileId}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    fetchHistory();
+                } else {
+                    alert("Delete failed: " + data.message);
                 }
-            };
-            fileInput.click();
+            } catch (e) {
+                alert("Connection error deleting file.");
+            }
+        }
+
+        async function quickSummarizeVaultDoc(fileId, fileName) {
+            alert(`🤖 Generating AI Summary for "${fileName}"... Please wait.`);
+            try {
+                const docRes = await fetch(`${BACKEND}/document/${fileId}`);
+                const docData = await docRes.json();
+                if (!docData.extracted_text) throw new Error("Could not fetch document text");
+
+                const sumRes = await fetch(`${BACKEND}/summarize`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: docData.extracted_text, max_sentences: 3 })
+                });
+                const sumData = await sumRes.json();
+                if (sumData.status === 'success') {
+                    alert(`📌 GEMINI AI SUMMARY for "${fileName}":\n\n${sumData.summary}`);
+                } else {
+                    alert("Failed to summarize: " + sumData.message);
+                }
+            } catch (e) {
+                alert("Error generating AI Summary.");
+            }
+        }
+
+        async function quickDownloadMP3VaultDoc(fileId, fileName) {
+            alert(`🔊 Generating MP3 Audio for "${fileName}"... Download will start shortly.`);
+            try {
+                const docRes = await fetch(`${BACKEND}/document/${fileId}`);
+                const docData = await docRes.json();
+                if (!docData.extracted_text) throw new Error("Could not fetch document text");
+
+                const ttsRes = await fetch(`${BACKEND}/tts?text=${encodeURIComponent(docData.extracted_text.substring(0, 300))}&lang=en`);
+                const blob = await ttsRes.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `${fileName}.mp3`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            } catch (e) {
+                alert("Error downloading MP3 audio.");
+            }
+        }
+
+        uploadBtn.addEventListener('click', function() {
+            realFileInput.click();
         });
+
+        realFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            uploadBtn.innerText = "Uploading & Extracting...";
+            uploadBtn.disabled = true;
+            statusDiv.className = 'status-msg info';
+            statusDiv.innerText = "Processing file (Running OCR / Text Extraction)...";
+            statusDiv.style.display = 'block';
+
+            try {
+                const uploadRes = await fetch(`${BACKEND}/upload`, { method: 'POST', body: formData });
+                const uploadData = await uploadRes.json();
+
+                if (uploadData.status === 'success') {
+                    statusDiv.className = 'status-msg success';
+                    statusDiv.innerHTML = "✅ " + uploadData.message + "<br>Redirecting to Reader...";
+
+                    const encodedName = encodeURIComponent(uploadData.file_name || "Document");
+                    const readerUrl = `${READER_PAGE}?file_id=${encodeURIComponent(uploadData.file_id)}`
+                        + `&fileName=${encodedName}`
+                        + `&pages=${uploadData.total_pages}`;
+
+                    window.location.href = readerUrl;
+                } else {
+                    statusDiv.className = 'status-msg error';
+                    statusDiv.innerText = "❌ " + uploadData.message;
+                }
+            } catch (error) {
+                statusDiv.className = 'status-msg error';
+                statusDiv.innerText = "❌ Connection Error: Is Backend running?";
+            } finally {
+                uploadBtn.innerText = "Choose a document";
+                uploadBtn.disabled = false;
+            }
+        });
+
+        // VOICE CONTROL FOR FILE VAULT
+        function setupLibraryVoiceControl() {
+            const uploadVoiceCmdBtn = document.getElementById('uploadVoiceCmdBtn');
+            const uploadVoiceLabel = document.getElementById('uploadVoiceLabel');
+            const uploadVoiceStatus = document.getElementById('uploadVoiceStatus');
+
+            const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+            let recognition = null;
+            let isActive = false;
+
+            async function handleUploadVoiceTranscript(transcript) {
+                const rawText = transcript.toLowerCase().trim();
+                console.log("🗣️ Heard voice command:", rawText);
+
+                if (rawText.includes("upload file") || rawText.includes("choose document") || rawText.includes("open file")) {
+                    uploadVoiceStatus.innerHTML = `Heard "<strong>${transcript}</strong>" — Opening file chooser...`;
+                    realFileInput.click();
+                    return;
+                }
+
+                if (rawText.startsWith("delete ")) {
+                    const fileToDelete = rawText.replace("delete ", "").trim();
+                    const match = storedDocsData.find(d => d.file_name.toLowerCase().includes(fileToDelete));
+                    if (match) {
+                        deleteDocumentFromVault(match.file_id, match.file_name);
+                    }
+                    return;
+                }
+
+                let targetFilename = rawText.replace(/^(open|select|choose|pick|read)\s+/, '').trim();
+
+                let bestMatch = null;
+                let highestScore = 0;
+
+                storedDocsData.forEach((item, index) => {
+                    let fullName = item.file_name.toLowerCase();
+                    const docNumber = (index + 1).toString();
+                    let score = 0;
+                    if (targetFilename === docNumber || rawText.includes(`number ${docNumber}`)) score = 100;
+                    else if (fullName.includes(targetFilename)) score = 90;
+
+                    if (score > highestScore) {
+                        highestScore = score;
+                        bestMatch = item;
+                    }
+                });
+
+                if (bestMatch && highestScore >= 20) {
+                    uploadVoiceStatus.innerHTML = `✅ Opening <strong>${bestMatch.file_name}</strong>...`;
+                    const readerUrl = `${READER_PAGE}?file_id=${encodeURIComponent(bestMatch.file_id)}&fileName=${encodeURIComponent(bestMatch.file_name)}&pages=${bestMatch.total_pages}`;
+                    window.location.href = readerUrl;
+                }
+            }
+
+            if (uploadVoiceCmdBtn) {
+                uploadVoiceCmdBtn.addEventListener('click', () => {
+                    if (!SpeechRecognitionAPI) {
+                        alert('Voice control is not supported in this browser.');
+                        return;
+                    }
+                    if (isActive) {
+                        if (recognition) recognition.stop();
+                        isActive = false;
+                        uploadVoiceLabel.innerText = "Enable voice control";
+                        uploadVoiceCmdBtn.style.background = "var(--teal)";
+                    } else {
+                        recognition = new SpeechRecognitionAPI();
+                        recognition.continuous = true;
+                        recognition.lang = 'en-IN';
+                        recognition.onresult = (e) => {
+                            const last = e.results[e.results.length - 1];
+                            handleUploadVoiceTranscript(last[0].transcript.trim());
+                        };
+                        recognition.start();
+                        isActive = true;
+                        uploadVoiceLabel.innerText = "Listening…";
+                        uploadVoiceCmdBtn.style.background = "var(--orange-1)";
+                    }
+                });
+            }
+        }
     </script>
 </body>
 </html>
