@@ -7,6 +7,9 @@ When I am traveling on a **bike or in a car**, I cannot physically look at my ph
 3. **Get quick AI summaries and translations** (in Hindi/Gujarati) on the go.
 That's why I created **Jeeni Reader AI** — an all-in-one accessibility tool that converts any document into an interactive, voice-controlled audio experience!
 
+<img width="320" height="165" alt="download" src="https://github.com/user-attachments/assets/81ab20ed-ed65-4ee5-951e-fc147b627e00" />
+
+
 ##  System Pipeline
 
 ```mermaid
@@ -29,7 +32,7 @@ flowchart TD
     Summary --> Vault["📂 Document Vault & WhatsApp Share"]
     TransText --> Vault
     MP3 --> Vault
-<img width="320" height="165" alt="download" src="https://github.com/user-attachments/assets/07da742b-ec2f-4c83-b464-376cdbae04fc" />
+
 
 
 
