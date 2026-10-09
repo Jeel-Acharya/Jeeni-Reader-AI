@@ -1,4 +1,3 @@
-<img width="320" height="148" alt="download" src="https://github.com/user-attachments/assets/d6002195-553b-41ea-b198-f7b7c281cbb5" />
 Why I Built This Project (The Story Behind Jeeni Reader AI)
 
 The inspiration for **Jeeni Reader AI** came from a personal everyday challenge: **multitasking while commuting**.
@@ -9,6 +8,12 @@ When I am traveling on a **bike or in a car**, I cannot physically look at my ph
 That's why I created **Jeeni Reader AI** — an all-in-one accessibility tool that converts any document into an interactive, voice-controlled audio experience!
 
 <img width="320" height="165" alt="download" src="https://github.com/user-attachments/assets/81ab20ed-ed65-4ee5-951e-fc147b627e00" />
+
+<img width="320" height="148" alt="download" src="https://github.com/user-attachments/assets/d6002195-553b-41ea-b198-f7b7c281cbb5" />
+
+<img width="320" height="172" alt="download" src="https://github.com/user-attachments/assets/64979edf-102f-4b85-8939-4bfb007aa49a" />
+<img width="320" height="169" alt="download" src="https://github.com/user-attachments/assets/0920956d-b9a5-41f1-af18-65434e25f06e" />
+<img width="320" height="154" alt="download" src="https://github.com/user-attachments/assets/d775a000-3425-42b9-90ca-bb16c5ebed37" />
 
 
 ##  System Pipeline
