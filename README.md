@@ -1,3 +1,4 @@
+<img width="320" height="148" alt="download" src="https://github.com/user-attachments/assets/d6002195-553b-41ea-b198-f7b7c281cbb5" />
 Why I Built This Project (The Story Behind Jeeni Reader AI)
 
 The inspiration for **Jeeni Reader AI** came from a personal everyday challenge: **multitasking while commuting**.
