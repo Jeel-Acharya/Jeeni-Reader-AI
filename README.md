@@ -29,3 +29,6 @@ flowchart TD
     Summary --> Vault["📂 Document Vault & WhatsApp Share"]
     TransText --> Vault
     MP3 --> Vault
+
+<img width="1024" height="529" alt="image" src="https://github.com/user-attachments/assets/09b3647a-532c-4f37-94bc-19435d66412f" />
+
